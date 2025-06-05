@@ -1,0 +1,32 @@
+const mongoose=require("mongoose")
+const authModel=new mongoose.Schema({
+    username:{
+        type:String,
+        required:true
+    },
+    email:{
+        type:String,
+        required:true
+    },
+    password:{
+        type:String,
+        required:true
+    },
+    contactno:{
+        type:String,
+        required:true
+    },
+    usn:{
+        type:String
+    },
+    branch:{
+        type:String
+    },
+    collage:{
+        type:String
+    },
+    profilephoto:{
+        type:String
+    }
+})
+module.exports=mongoose.model("Auth",authModel)

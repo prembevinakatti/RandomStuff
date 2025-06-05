@@ -42,3 +42,6 @@ RandomStuff/
 ├── .env                   # Environment variables
 ├── package.json           # Project metadata & dependencies
 └── README.md              # Project documentation
+5-6-25 Meghana
+->Created authmodel,authcontroller,authroutes
+->Crerated adminmodel,admincontroller,adminrotes
