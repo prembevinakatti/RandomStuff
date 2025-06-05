@@ -42,6 +42,20 @@ RandomStuff/
 ├── .env                   # Environment variables
 ├── package.json           # Project metadata & dependencies
 └── README.md              # Project documentation
-5-6-25 Meghana
-->Created authmodel,authcontroller,authroutes
-->Crerated adminmodel,admincontroller,adminrotes
+
+```
+
+
+### 05-06-25 (Meghana)
+- Created `authmodel`, `authcontroller`, `authroutes`.
+- Created `adminmodel`, `admincontroller`, `adminroutes`.
+
+
+
+### 05-06-2025 (Onkar)
+- Created middleware for both auth and admin routes.
+- Integrated OAuth login with Google and GitHub.
+- Installed new dependencies:
+  - `passport`
+  - `passport-google-oauth20`
+  - `passport-github2`
