@@ -1,6 +1,6 @@
 # 🧪 RandomStuff
 
-A Node.js backend project initialized on **05-06-2025**, structured to serve as a scalable foundation for web applications using Express, MongoDB, and authentication modules.
+A Node.js backend project initialized on **05-06-2025**
 
 ---
 
@@ -37,6 +37,7 @@ RandomStuff/
 ├── /routes                # Route handlers
 ├── /controllers           # Request logic
 ├── /middlewares           # Custom middleware
+├── /services              # Business logic & reusable services
 ├── /config                # Configuration files (e.g., DB connection)
 ├── .env                   # Environment variables
 ├── package.json           # Project metadata & dependencies
