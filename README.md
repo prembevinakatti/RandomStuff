@@ -61,5 +61,16 @@ RandomStuff/
   - `passport-github2`
 
 
-### 06-06-25 (Meghana)
-- Created 'profilemodel','profilecontroler','profileroutes'.
+### 🗓️ **06-06-25**
+
+#### ✅ Meghana  
+- Created `profilemodel`, `profilecontroller`, and `profileroutes` for managing user profiles.
+
+#### ✅ Onkar  
+- **Utils:**  
+  - Implemented `generateOtp` function for OTP generation.  
+  - Created `mailer` utility for sending OTPs and welcome emails.  
+
+- **Auth Features:**  
+  - Developed **request OTP** and **verify OTP** endpoints for email verification.  
+  - Integrated email service to send **OTP** during registration and **welcome emails** upon successful signup.

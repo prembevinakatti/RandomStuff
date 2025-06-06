@@ -14,6 +14,18 @@ const authModel = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  otp: {
+    type: Number,
+    required: true,
+  },
+  otpExpire: {
+    type: Date,
+    required: true,
+  },
   // profileId: {
   //   type: mongoose.Schema.Types.ObjectId,
   //   required: true,
