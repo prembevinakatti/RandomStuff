@@ -6,6 +6,7 @@ const ProfileSchema = new mongoose.Schema({
 
   profileimage: {
     type: String,
+    default: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
   },
   address: {
     city: String,
