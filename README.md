@@ -77,3 +77,11 @@ RandomStuff/
 
   ## Meghana
   - Handled reset and password 
+
+### 🗓️ **07-06-25**
+
+#### ✅ Meghana  
+- Integrated **password reset** functionality. 
+
+#### ✅ Onkar  
+- Handled **Captcha** verification in server side for user registration.

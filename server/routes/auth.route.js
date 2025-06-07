@@ -8,20 +8,19 @@ const {
   verifyOtp,
   changepassword,
   forgotpassword,
-  // resetpassword,
 } = require("../controllers/auth.controller");
 const authMiddleware = require("../middleware/authMiddleware");
+const captchaVerify = require("../middleware/captchaVerify");
 
 const router = express.Router();
 
-router.route("/register").post(register);
+router.route("/register").post(captchaVerify,register);
 router.route("/login").post(login);
 router.route("/logout").get(logout);
 router.route("/getUser").get(getUser);
 router.route("/requestOtp").post(authMiddleware, requestOtp);
 router.route("/verifyOtp").post(authMiddleware, verifyOtp);
-router.route("/changepassword").post(authMiddleware,changepassword)
-router.route("/forgotpassword").post(authMiddleware,forgotpassword)
-// router.route("/resetpassword").post(authMiddleware,resetpassword)
+router.route("/changePassword").post(authMiddleware,changepassword)
+router.route("/forgotPassword").post(authMiddleware,forgotpassword)
 
 module.exports = router;

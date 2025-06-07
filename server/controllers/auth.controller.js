@@ -60,13 +60,13 @@ module.exports.login = async (req, res) => {
     const user = await authModel.findOne({ email });
 
     if (!user) {
-      return res.status(204).json({ message: "user not found" });
+      return res.status(404).json({ message: "user not found" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      res.status(200).json({ message: "password does not match" });
+      res.status(401).json({ message: "Email or Password is incorrect" });
     }
 
     const AuthToken = jwt.sign({ user: user }, process.env.AUTH_JWT_TOKEN);
@@ -178,27 +178,29 @@ module.exports.verifyOtp = async (req, res) => {
 
 module.exports.changepassword = async (req, res) => {
   try {
-    const userId = req.user_id;
-    const { currentpassword, newpassword, confirmnewpassword } = req.body;
-    if (!currentpassword || !newpassword || !confirmnewpassword) {
-      return res.status(404).json({ message: "All fields are required" });
+    const userId = req.user._id;
+
+    const { currentPassword, newPassword, confirmNewPassword } = req.body;
+
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      return res.status(400).json({ message: "All fields are required" });
     }
-    if (newpassword !== confirmnewpassword) {
-      return res.status(204).json({ message: "Password does not match" });
+    if (newPassword !== confirmNewPassword) {
+      return res.status(401).json({ message: "Password does not match" });
     }
 
-    const user = await user.findById(userId);
+    const user = await authModel.findById(userId);
     if (!user) {
-      return res.status(200).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    const isMatch = await bcrypt.compare(currentpassword, user.password);
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+
     if (!isMatch) {
-      return res.status(404).json({ message: "user password does not found" });
+      return res.status(401).json({ message: "Invalid Current Password" });
     }
 
-    const hash = await bcrypt.hashpassword(newpassword, 10);
-    user.password = hashpassword;
+    user.password = newPassword;
     await user.save();
 
     return res.status(200).json({ message: "Password changed successfully" });
@@ -210,19 +212,16 @@ module.exports.changepassword = async (req, res) => {
 module.exports.forgotpassword = async (req, res) => {
   try {
     const { email } = req.body;
+
+    if (!email) {
+      return res.status(404).json({ message: "email required" });
+    }
     const user = await user.findOne({ email });
     if (!user) {
       return res.status(200).json({ message: "User not found" });
     }
 
-    // const token = crypto.randomBytes(32).tostring("hex");
-    // const expires = Date.now() + 3600000;
-
-    // user.resetpasswordToken = token;
-    // user.resetpasswordExpires = expires;
-    // await user.save();
-
-    const resetlink = "";
+    const resetLink = "";
 
     const mailOption = {
       from: process.env.EMAIL_USER,
@@ -240,35 +239,3 @@ module.exports.forgotpassword = async (req, res) => {
     console.log("error", error.message);
   }
 };
-
-// module.exports.resetpassword = async (req, res) => {
-//   try {
-//     const { token } = req.params;
-//     const { newpassword, confirmnewpassword } = req.body;
-//     if (!newpassword || !confirmnewpassword) {
-//       return res.status(200).json({ message: "All fields are required" });
-//     }
-
-//     if (newpassword != confirmnewpassword) {
-//       return res.status(400).json({ message: "Password does not match" });
-//     }
-
-//     const user = await user.findOne({
-//       resetpasswordToken: token,
-//       resetpasswordExpires: { $gt: Date.now() },
-//     });
-
-//     if (!user) {
-//       return res.status(400).json({ message: "Ivalid or expired Token" });
-//     }
-
-//     const hash = await bcrypt.hash(password, 10);
-//     user.password = await bcrypt.hash(newpassword, hash);
-//     user.resetpasswordToken = undefined;
-//     user.resetpasswordExpires = undefined;
-//     await user.save();
-//     return res.status(200).json({ message: "Password has reset successfully" });
-//   } catch (error) {
-//     console.log("error", error.message);
-//   }
-// };
