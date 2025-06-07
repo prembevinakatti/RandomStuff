@@ -175,3 +175,100 @@ module.exports.verifyOtp = async (req, res) => {
     return res.status(404).json({ message: "error", error: error.message });
   }
 };
+
+module.exports.changepassword = async (req, res) => {
+  try {
+    const userId = req.user_id;
+    const { currentpassword, newpassword, confirmnewpassword } = req.body;
+    if (!currentpassword || !newpassword || !confirmnewpassword) {
+      return res.status(404).json({ message: "All fields are required" });
+    }
+    if (newpassword !== confirmnewpassword) {
+      return res.status(204).json({ message: "Password does not match" });
+    }
+
+    const user = await user.findById(userId);
+    if (!user) {
+      return res.status(200).json({ message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(currentpassword, user.password);
+    if (!isMatch) {
+      return res.status(404).json({ message: "user password does not found" });
+    }
+
+    const hash = await bcrypt.hashpassword(newpassword, 10);
+    user.password = hashpassword;
+    await user.save();
+
+    return res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    console.log("error", error.message);
+  }
+};
+
+module.exports.forgotpassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await user.findOne({ email });
+    if (!user) {
+      return res.status(200).json({ message: "User not found" });
+    }
+
+    // const token = crypto.randomBytes(32).tostring("hex");
+    // const expires = Date.now() + 3600000;
+
+    // user.resetpasswordToken = token;
+    // user.resetpasswordExpires = expires;
+    // await user.save();
+
+    const resetlink = "";
+
+    const mailOption = {
+      from: process.env.EMAIL_USER,
+      to: newUser?.email,
+      subject: "Request for Password Reset",
+      text: `Click the link below to reset your password. This link will expire in 1 hour"${resetLink}"`,
+    };
+
+    await transporter.sendMail(mailOption);
+
+    return res
+      .status(200)
+      .json({ message: "Password reset link sent to your mail" });
+  } catch (error) {
+    console.log("error", error.message);
+  }
+};
+
+// module.exports.resetpassword = async (req, res) => {
+//   try {
+//     const { token } = req.params;
+//     const { newpassword, confirmnewpassword } = req.body;
+//     if (!newpassword || !confirmnewpassword) {
+//       return res.status(200).json({ message: "All fields are required" });
+//     }
+
+//     if (newpassword != confirmnewpassword) {
+//       return res.status(400).json({ message: "Password does not match" });
+//     }
+
+//     const user = await user.findOne({
+//       resetpasswordToken: token,
+//       resetpasswordExpires: { $gt: Date.now() },
+//     });
+
+//     if (!user) {
+//       return res.status(400).json({ message: "Ivalid or expired Token" });
+//     }
+
+//     const hash = await bcrypt.hash(password, 10);
+//     user.password = await bcrypt.hash(newpassword, hash);
+//     user.resetpasswordToken = undefined;
+//     user.resetpasswordExpires = undefined;
+//     await user.save();
+//     return res.status(200).json({ message: "Password has reset successfully" });
+//   } catch (error) {
+//     console.log("error", error.message);
+//   }
+// };

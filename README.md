@@ -74,3 +74,6 @@ RandomStuff/
 - **Auth Features:**  
   - Developed **request OTP** and **verify OTP** endpoints for email verification.  
   - Integrated email service to send **OTP** during registration and **welcome emails** upon successful signup.
+
+  ## Meghana
+  - Handled reset and password 
