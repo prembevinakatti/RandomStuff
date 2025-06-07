@@ -1,8 +1,10 @@
-const Profile = require("../models/Profile");
+const authModel = require("../models/auth.model");
+const Profile = require("../models/userProfile.model");
 
-exports.createProfile = async (req, res) => {
+module.exports.createProfile = async (req, res) => {
   try {
     const { data } = req.body;
+    const userId = req.user._id;
 
     if (!data) {
       return res.status(400).json({ message: "Data is required" });
@@ -14,8 +16,16 @@ exports.createProfile = async (req, res) => {
       return res.status(400).json({ message: "Profile already exists" });
     }
 
-    const profile = new Profile(data);
+    const profile = new Profile({ ...data, userId });
     await profile.save();
+
+    const user = await authModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.profileId = profile._id;
+    await user.save();
 
     return res.status(201).json({
       message: "Profile created successfully",
@@ -27,11 +37,17 @@ exports.createProfile = async (req, res) => {
   }
 };
 
-exports.getProfileByUserId = async (req, res) => {
+module.exports.getProfileByUserId = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user._id;
 
-    const profile = await Profile.findOne({ userId }).populate("userId");
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    const profile = await Profile.findOne({ userId: userId }).populate(
+      "userId"
+    );
 
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
@@ -47,12 +63,16 @@ exports.getProfileByUserId = async (req, res) => {
   }
 };
 
-exports.updateProfile = async (req, res) => {
+module.exports.updateProfile = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user._id;
+
+    if (!userId) {
+      return res.status(400).json({ message: "userId is required" });
+    }
 
     const updatedProfile = await Profile.findOneAndUpdate(
-      { userId },
+      { userId: userId },
       { $set: req.body },
       { new: true }
     );
@@ -71,29 +91,8 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
-exports.deleteProfile = async (req, res) => {
-  try {
-    const { userId } = req.params;
 
-    if (!userId) {
-      return res.status(400).json({ message: "userId is required" });
-    }
-
-    const deletedProfile = await Profile.findOneAndDelete({ userId });
-
-    if (!deletedProfile) {
-      return res.status(404).json({ message: "Profile not found" });
-    }
-
-    return res
-      .status(200)
-      .json({ message: "Profile deleted successfully", success: true });
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting profile", error });
-  }
-};
-
-exports.getAllProfiles = async (req, res) => {
+module.exports.getAllProfiles = async (req, res) => {
   try {
     const profiles = await Profile.find()
       .populate("userId")

@@ -6,6 +6,7 @@ const cors = require("cors");
 const AuthRoute = require("./routes/auth.route");
 const AdminRoute = require("./routes/admin.route");
 const OAuthRoute = require("./routes/oauth.route");
+const ProfileRoute = require("./routes/userprofile.route")
 const session = require("express-session");
 const passport = require("passport");
 
@@ -34,6 +35,7 @@ app.use(cors(corsOption));
 app.use("/api/randomstuff/auth", AuthRoute);
 app.use("/api/randomstuff/admin", AdminRoute);
 app.use("/api/randomstuff/oauth", OAuthRoute);
+app.use("/api/randomstuff/profile",ProfileRoute)
 
 const PORT = process.env.PORT || 8080;
 

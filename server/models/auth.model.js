@@ -20,17 +20,15 @@ const authModel = new mongoose.Schema({
   },
   otp: {
     type: Number,
-    required: true,
   },
   otpExpire: {
     type: Date,
-    required: true,
   },
-  // profileId: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   required: true,
-  //   ref: "Profile",
-  // },
+  profileId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Profile",
+    default: null,
+  },
 });
 
 authModel.pre("save", async function (next) {

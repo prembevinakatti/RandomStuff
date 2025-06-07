@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const ProfileSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "Auth", required: true },
   contactno: { type: String, required: true },
 
   profileimage: {

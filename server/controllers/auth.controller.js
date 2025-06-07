@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const transporter = require("../services/email.service");
 const generateOtp = require("../utils/generateOtp");
-const sendOtpEmail = require("../utils/mailer");
+const { sendOtpEmail } = require("../utils/mailer");
 
 module.exports.register = async (req, res) => {
   try {
@@ -115,7 +115,11 @@ module.exports.getUser = async (req, res) => {
 
 module.exports.requestOtp = async (req, res) => {
   try {
-    const { email } = req.body;
+    const email = req.user.email;
+
+    if (!email) {
+      return res.status(404).json({ message: "email required" });
+    }
 
     let user = await authModel.findOne({ email });
 
@@ -140,7 +144,12 @@ module.exports.requestOtp = async (req, res) => {
 
 module.exports.verifyOtp = async (req, res) => {
   try {
-    const { email, otp } = req.body;
+    const { otp } = req.body;
+    const email = req.user.email;
+
+    if (!email || !otp) {
+      return res.status(404).json({ message: "email and otp required" });
+    }
 
     const user = await authModel.findOne({ email });
     if (!user) {
@@ -151,7 +160,7 @@ module.exports.verifyOtp = async (req, res) => {
       return res.status(404).json({ message: "otp does not match" });
     }
 
-    if (otpExpire < Date.now()) {
+    if (user.otpExpire < Date.now()) {
       return res.status(404).json({ message: "otp expired" });
     }
 
