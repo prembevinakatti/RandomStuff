@@ -88,6 +88,7 @@ RandomStuff/
 
 ### 🗓️ **08-06-2025**  
 ✅ Initialized the **frontend** and integrated **Tailwind CSS** and **shadcn/ui** for building modern UIs.
+- Created login register landingpage design
 
 ---
 
