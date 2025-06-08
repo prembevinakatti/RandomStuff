@@ -85,3 +85,6 @@ RandomStuff/
 
 #### ✅ Onkar  
 - Handled **Captcha** verification in server side for user registration.
+
+### Meghana
+-Initialised frontend
