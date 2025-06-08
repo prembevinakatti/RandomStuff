@@ -66,7 +66,7 @@ module.exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      res.status(401).json({ message: "Email or Password is incorrect" });
+      return res.status(401).json({ message: "Email or Password is incorrect" });
     }
 
     const AuthToken = jwt.sign({ user: user }, process.env.AUTH_JWT_TOKEN);
@@ -74,7 +74,7 @@ module.exports.login = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "user login successfull", success: true, user: user });
+      .json({ message: "User Login Successfull", success: true, user: user });
   } catch (error) {
     console.log("error", error.message);
   }

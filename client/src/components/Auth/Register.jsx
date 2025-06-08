@@ -1,56 +1,77 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
-
-const starsArray = Array(50).fill(0);
+import axios from "axios";
+import ReCAPTCHA from "react-google-recaptcha";
+import { Bounce, toast } from "react-toastify";
 
 const RegisterPage = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Registration Data:", data);
+  const recaptchaRef = useRef(null);
+  const [captchaError, setCaptchaError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+
+  const onSubmit = async (data) => {
+    const token = recaptchaRef.current.getValue();
+    if (!token) {
+      setCaptchaError("Please verify the captcha");
+      return;
+    }
+    setCaptchaError(null);
+
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/randomstuff/auth/register`,
+        { ...data, captcha: token },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (response.data.success) {
+        toast.success(response.data.message || "Registration successful!", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "light",
+          transition: Bounce,
+        });
+      } else {
+        toast.error(response.data.message || "Registration failed.", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "light",
+          transition: Bounce,
+        });
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+      toast.error(error.response?.data?.message || "Something went wrong!", {
+        position: "top-right",
+        autoClose: 5000,
+        theme: "light",
+        transition: Bounce,
+      });
+    } finally {
+      setIsLoading(false);
+      reset();
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white flex items-center justify-center relative overflow-hidden px-6">
-      {/* Stars Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="w-full h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 animate-pulse" />
-        {starsArray.map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0.3, scale: 1 }}
-            animate={{
-              opacity: [0.3, 1, 0.3],
-              scale: [1, 1.5, 1],
-              filter: ["brightness(1)", "brightness(2.5)", "brightness(1)"],
-            }}
-            transition={{
-              duration: 4 + Math.random() * 4,
-              repeat: Infinity,
-              delay: Math.random() * 5,
-            }}
-            className="bg-white rounded-full absolute"
-            style={{
-              width: 2.5,
-              height: 2.5,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              filter: "drop-shadow(0 0 3px white)",
-            }}
-          />
-        ))}
-      </div>
+      {/* Stars and background effects can go here */}
 
-      {/* Glowing Orbs */}
-      <motion.div animate={{ y: [0, -20, 0], x: [0, 10, 0, -10, 0] }} transition={{ duration: 10, repeat: Infinity }} className="absolute top-24 left-10 w-24 h-24 bg-pink-500 rounded-full opacity-30 blur-2xl mix-blend-screen" />
-      <motion.div animate={{ y: [0, -20, 0], x: [0, -15, 0, 15, 0] }} transition={{ duration: 10, repeat: Infinity, delay: 2 }} className="absolute bottom-28 right-10 w-32 h-32 bg-indigo-600 rounded-full opacity-20 blur-3xl mix-blend-screen" />
-
-      {/* Register Form Box */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -64,7 +85,10 @@ const RegisterPage = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Username */}
           <div>
-            <label htmlFor="username" className="block text-sm text-purple-200 mb-1">
+            <label
+              htmlFor="username"
+              className="block text-sm text-purple-200 mb-1"
+            >
               Username
             </label>
             <input
@@ -74,13 +98,18 @@ const RegisterPage = () => {
               placeholder="Choose a username"
             />
             {errors.username && (
-              <p className="text-red-400 text-sm mt-1">{errors.username.message}</p>
+              <p className="text-red-400 text-sm mt-1">
+                {errors.username.message}
+              </p>
             )}
           </div>
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm text-purple-200 mb-1">
+            <label
+              htmlFor="email"
+              className="block text-sm text-purple-200 mb-1"
+            >
               Email
             </label>
             <input
@@ -93,13 +122,18 @@ const RegisterPage = () => {
               placeholder="Enter your email"
             />
             {errors.email && (
-              <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>
+              <p className="text-red-400 text-sm mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm text-purple-200 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm text-purple-200 mb-1"
+            >
               Password
             </label>
             <input
@@ -113,7 +147,17 @@ const RegisterPage = () => {
               placeholder="Create a password"
             />
             {errors.password && (
-              <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
+              <p className="text-red-400 text-sm mt-1">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          {/* reCAPTCHA */}
+          <div className="w-full flex flex-col items-center justify-center">
+            <ReCAPTCHA sitekey={siteKey} ref={recaptchaRef} className="mt-3" />
+            {captchaError && (
+              <p className="text-red-400 text-sm mt-1">{captchaError}</p>
             )}
           </div>
 
@@ -122,9 +166,36 @@ const RegisterPage = () => {
             type="submit"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300"
+            disabled={isLoading}
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center"
           >
-            Register
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  ></path>
+                </svg>
+                <span>Registering...</span>
+              </div>
+            ) : (
+              "Register"
+            )}
           </motion.button>
         </form>
       </motion.div>
