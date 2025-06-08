@@ -86,5 +86,20 @@ RandomStuff/
 #### ✅ Onkar  
 - Handled **Captcha** verification in server side for user registration.
 
-### Meghana
--Initialised frontend
+### 🗓️ **08-06-2025**  
+✅ Initialized the **frontend** and integrated **Tailwind CSS** and **shadcn/ui** for building modern UIs.
+
+---
+
+## 📦 Installed Frontend Dependencies
+
+| Package             | Purpose                                           |
+|---------------------|---------------------------------------------------|
+| `axios`             | HTTP client for making API requests               |
+| `react-redux`       | State management with Redux in React              |
+| `@reduxjs/toolkit`  | Simplified Redux logic and best practices         |
+| `react-toastify`    | Displaying toast notifications and alerts         |
+| `react-router-dom`  | Client-side routing for React apps                |
+
+---
+
