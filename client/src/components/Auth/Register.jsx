@@ -72,7 +72,7 @@ const RegisterPage = () => {
     <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden p-8">
       {/* 🔵 Animated Blurry Blue Blob (Top Left) */}
       <motion.div
-        className="absolute rounded-full bg-blue-500 blur-3xl opacity-50"
+        className="absolute rounded-full bg-sky-400 blur-3xl opacity-50"
         style={{
           width: "400px",
           height: "400px",
@@ -92,7 +92,7 @@ const RegisterPage = () => {
 
       {/* 🔵 Animated Blurry Blue Blob (Bottom Right) */}
       <motion.div
-        className="absolute rounded-full bg-blue-700 blur-3xl opacity-60"
+        className="absolute rounded-full bg-sky-400 blur-3xl opacity-60"
         style={{
           width: "300px",
           height: "300px",
@@ -114,7 +114,7 @@ const RegisterPage = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
-        className="relative z-10 p-6 rounded-xl w-full max-w-sm border border-blue-300 bg-black bg-opacity-40 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,255,0.6)]"
+        className="relative z-10 p-6 rounded-xl w-full max-w-sm border border-sky-300 bg-black bg-opacity-40 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,255,0.6)]"
         style={{
           "--border-color": "blue",
           "--glow-color": "rgba(0, 0, 255, 0.4)",
@@ -133,7 +133,7 @@ const RegisterPage = () => {
             <input
               {...register("username", { required: "Username is required" })}
               id="username"
-              className="w-full p-2 rounded-lg  bg-opacity-30 text-white border border-blue-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full p-2 rounded-lg bg-gray-900 bg-opacity-30 text-white border border-blue-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
               placeholder="Choose a username"
             />
             {errors.username && (
@@ -152,7 +152,7 @@ const RegisterPage = () => {
                 pattern: { value: /^\S+@\S+$/i, message: "Invalid email" },
               })}
               id="email"
-              className="w-full p-2 rounded-lg  bg-opacity-30 text-white border border-blue-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full p-2 rounded-lg bg-gray-900 bg-opacity-30 text-white border border-sky-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
               placeholder="Enter your email"
             />
             {errors.email && (
@@ -178,7 +178,7 @@ const RegisterPage = () => {
                   message: "Contact number is too long",
                 },
               })}
-              className="w-full p-2 rounded-lg  bg-opacity-30 text-white border border-blue-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full p-2 rounded-lg bg-gray-900 bg-opacity-30 text-white border border-sky-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
               placeholder="Enter your contact number"
               disabled={isLoading}
             />
@@ -201,7 +201,7 @@ const RegisterPage = () => {
               })}
               id="password"
               type="password"
-              className="w-full p-2 rounded-lg  bg-opacity-30 text-white border border-blue-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full p-2 rounded-lg bg-gray-900 bg-opacity-30 text-white border border-sky-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
               placeholder="Create a password"
             />
             {errors.password && (
@@ -223,7 +223,7 @@ const RegisterPage = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center text-sm"
+            className="w-full bg-sky-400 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center text-sm"
           >
             {isLoading ? (
               <div className="flex items-center gap-2">
