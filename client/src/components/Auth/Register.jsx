@@ -114,10 +114,10 @@ const RegisterPage = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
-        className="relative z-10 p-6 rounded-xl w-full max-w-sm border border-sky-300 bg-white/5 bg-opacity-40 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,255,0.6)]"
+        className="relative z-10 p-6 rounded-xl w-full max-w-sm border border-sky-300 bg-white/5 bg-opacity-40 backdrop-blur-md shadow-[0_0_20px_rgba(0,191,255,0.6)]"
         style={{
-          "--border-color": "blue",
-          "--glow-color": "rgba(0, 0, 255, 0.4)",
+          "--border-color": "lightblue",
+          "--glow-color": "rgba(0, 191, 255, 0.4)",
         }}
       >
         <h2 className="text-2xl font-bold text-white text-center mb-4">
@@ -127,17 +127,22 @@ const RegisterPage = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Username */}
           <div>
-            <label htmlFor="username" className="block text-sm text-blue-200 mb-1">
+            <label
+              htmlFor="username"
+              className="block text-sm text-blue-200 mb-1"
+            >
               Username
             </label>
             <input
               {...register("username", { required: "Username is required" })}
               id="username"
-              className="w-full p-2 rounded-lg  bg-opacity-30 text-white border border-blue-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
+              className="w-full p-2 rounded-lg  bg-opacity-30 text-white border border-sky-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
               placeholder="Choose a username"
             />
             {errors.username && (
-              <p className="text-red-400 text-sm mt-1">{errors.username.message}</p>
+              <p className="text-red-400 text-sm mt-1">
+                {errors.username.message}
+              </p>
             )}
           </div>
 
@@ -156,7 +161,9 @@ const RegisterPage = () => {
               placeholder="Enter your email"
             />
             {errors.email && (
-              <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>
+              <p className="text-red-400 text-sm mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
@@ -191,7 +198,10 @@ const RegisterPage = () => {
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm text-blue-200 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm text-blue-200 mb-1"
+            >
               Password
             </label>
             <input
@@ -205,13 +215,19 @@ const RegisterPage = () => {
               placeholder="Create a password"
             />
             {errors.password && (
-              <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
+              <p className="text-red-400 text-sm mt-1">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
           {/* reCAPTCHA */}
           <div className="w-full flex flex-col items-center justify-center">
-            <ReCAPTCHA sitekey={siteKey} ref={recaptchaRef} className="mt-2 transform scale-75" />
+            <ReCAPTCHA
+              sitekey={siteKey}
+              ref={recaptchaRef}
+              className="mt-2 transform scale-75"
+            />
             {captchaError && (
               <p className="text-red-400 text-sm mt-1">{captchaError}</p>
             )}
