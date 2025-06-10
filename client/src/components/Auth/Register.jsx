@@ -43,14 +43,14 @@ const RegisterPage = () => {
         toast.success(response.data.message || "Registration successful!", {
           position: "top-right",
           autoClose: 5000,
-          theme: "light",
+          theme: "dark",
           transition: Bounce,
         });
       } else {
         toast.error(response.data.message || "Registration failed.", {
           position: "top-right",
           autoClose: 5000,
-          theme: "light",
+          theme: "dark",
           transition: Bounce,
         });
       }
@@ -59,7 +59,7 @@ const RegisterPage = () => {
       toast.error(error.response?.data?.message || "Something went wrong!", {
         position: "top-right",
         autoClose: 5000,
-        theme: "light",
+        theme: "dark",
         transition: Bounce,
       });
     } finally {
@@ -69,47 +69,81 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white flex items-center justify-center relative overflow-hidden px-6">
-      {/* Stars and background effects can go here */}
+    <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden p-8">
+      {/* 🔵 Animated Blurry Blue Blob (Top Left) */}
+      <motion.div
+        className="absolute rounded-full bg-blue-500 blur-3xl opacity-50"
+        style={{
+          width: "400px",
+          height: "400px",
+          top: "-100px",
+          left: "-100px",
+        }}
+        animate={{
+          x: [0, 100, -100, 0],
+          y: [0, 100, -100, 0],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+      />
+
+      {/* 🔵 Animated Blurry Blue Blob (Bottom Right) */}
+      <motion.div
+        className="absolute rounded-full bg-blue-700 blur-3xl opacity-60"
+        style={{
+          width: "300px",
+          height: "300px",
+          bottom: "-50px",
+          right: "-50px",
+        }}
+        animate={{
+          x: [0, -80, 80, 0],
+          y: [0, -80, 80, 0],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+      />
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
-        className="relative z-10 p-8 rounded-xl w-full max-w-md border border-purple-500 bg-opacity-10 backdrop-blur-md"
+        className="relative z-10 p-6 rounded-xl w-full max-w-sm border border-blue-300 bg-black bg-opacity-40 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,255,0.6)]"
+        style={{
+          "--border-color": "blue",
+          "--glow-color": "rgba(0, 0, 255, 0.4)",
+        }}
       >
-        <h2 className="text-3xl font-bold text-purple-300 text-center mb-6">
+        <h2 className="text-2xl font-bold text-white text-center mb-4">
           Register
         </h2>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Username */}
           <div>
-            <label
-              htmlFor="username"
-              className="block text-sm text-purple-200 mb-1"
-            >
+            <label htmlFor="username" className="block text-sm text-blue-200 mb-1">
               Username
             </label>
             <input
               {...register("username", { required: "Username is required" })}
               id="username"
-              className="w-full p-3 rounded-lg bg-gray-900 bg-opacity-30 text-white border border-purple-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full p-2 rounded-lg  bg-opacity-30 text-white border border-blue-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               placeholder="Choose a username"
             />
             {errors.username && (
-              <p className="text-red-400 text-sm mt-1">
-                {errors.username.message}
-              </p>
+              <p className="text-red-400 text-sm mt-1">{errors.username.message}</p>
             )}
           </div>
 
           {/* Email */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm text-purple-200 mb-1"
-            >
+            <label htmlFor="email" className="block text-sm text-blue-200 mb-1">
               Email
             </label>
             <input
@@ -118,22 +152,46 @@ const RegisterPage = () => {
                 pattern: { value: /^\S+@\S+$/i, message: "Invalid email" },
               })}
               id="email"
-              className="w-full p-3 rounded-lg bg-gray-900 bg-opacity-30 text-white border border-purple-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full p-2 rounded-lg  bg-opacity-30 text-white border border-blue-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               placeholder="Enter your email"
             />
             {errors.email && (
+              <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>
+            )}
+          </div>
+
+          {/* Contact Number Field */}
+          <div>
+            <label className="block text-sm text-blue-200 mb-1">
+              Contact Number
+            </label>
+            <input
+              type="tel"
+              {...register("contactNumber", {
+                required: "Contact number is required",
+                minLength: {
+                  value: 7,
+                  message: "Contact number is too short",
+                },
+                maxLength: {
+                  value: 15,
+                  message: "Contact number is too long",
+                },
+              })}
+              className="w-full p-2 rounded-lg  bg-opacity-30 text-white border border-blue-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              placeholder="Enter your contact number"
+              disabled={isLoading}
+            />
+            {errors.contactNumber && (
               <p className="text-red-400 text-sm mt-1">
-                {errors.email.message}
+                {errors.contactNumber.message}
               </p>
             )}
           </div>
 
           {/* Password */}
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm text-purple-200 mb-1"
-            >
+            <label htmlFor="password" className="block text-sm text-blue-200 mb-1">
               Password
             </label>
             <input
@@ -143,19 +201,17 @@ const RegisterPage = () => {
               })}
               id="password"
               type="password"
-              className="w-full p-3 rounded-lg bg-gray-900 bg-opacity-30 text-white border border-purple-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full p-2 rounded-lg  bg-opacity-30 text-white border border-blue-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               placeholder="Create a password"
             />
             {errors.password && (
-              <p className="text-red-400 text-sm mt-1">
-                {errors.password.message}
-              </p>
+              <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
             )}
           </div>
 
           {/* reCAPTCHA */}
           <div className="w-full flex flex-col items-center justify-center">
-            <ReCAPTCHA sitekey={siteKey} ref={recaptchaRef} className="mt-3" />
+            <ReCAPTCHA sitekey={siteKey} ref={recaptchaRef} className="mt-2 transform scale-75" />
             {captchaError && (
               <p className="text-red-400 text-sm mt-1">{captchaError}</p>
             )}
@@ -167,12 +223,12 @@ const RegisterPage = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             disabled={isLoading}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center text-sm"
           >
             {isLoading ? (
               <div className="flex items-center gap-2">
                 <svg
-                  className="animate-spin h-5 w-5 text-white"
+                  className="animate-spin h-4 w-4 text-white"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"

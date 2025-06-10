@@ -7,9 +7,9 @@ const { sendOtpEmail } = require("../utils/mailer");
 
 module.exports.register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, contactno, password } = req.body;
 
-    if (!username || !email || !password) {
+    if (!username || !email || !contactno || !password) {
       return res.status(404).json({ message: "All fields are required" });
     }
 
@@ -24,6 +24,7 @@ module.exports.register = async (req, res) => {
     const newUser = await authModel.create({
       username,
       password,
+      contactno,
       email,
     });
 
@@ -66,7 +67,9 @@ module.exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(401).json({ message: "Email or Password is incorrect" });
+      return res
+        .status(401)
+        .json({ message: "Email or Password is incorrect" });
     }
 
     const AuthToken = jwt.sign({ user: user }, process.env.AUTH_JWT_TOKEN);
@@ -135,7 +138,9 @@ module.exports.requestOtp = async (req, res) => {
     await user.save();
 
     await sendOtpEmail(email, otp);
-    return res.status(200).json({ message: "otp sent successfully" });
+    return res
+      .status(200)
+      .json({ message: "otp sent successfully", success: true });
   } catch (error) {
     console.log("error", error.message);
     return res.status(404).json({ message: "error", error: error.message });
@@ -169,7 +174,9 @@ module.exports.verifyOtp = async (req, res) => {
     user.otpExpire = undefined;
     await user.save();
 
-    return res.status(200).json({ message: "otp verified successfully" });
+    return res
+      .status(200)
+      .json({ message: "otp verified successfully", success: true });
   } catch (error) {
     console.log("error", error.message);
     return res.status(404).json({ message: "error", error: error.message });

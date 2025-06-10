@@ -18,6 +18,9 @@ const authModel = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  contactno: {
+    type: String,
+  },
   otp: {
     type: Number,
   },

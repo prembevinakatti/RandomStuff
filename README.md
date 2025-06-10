@@ -115,3 +115,9 @@ RandomStuff/
 - Created `login`, `register`, `Navbar`,`Dock`,`SettingPage` and `LandingPage` components.
 - Handled **captcha** verification in server side for user registration.
 - Integrated **password reset** functionality.
+
+### 🗓️ **09-06-2025**
+
+- Created `AdminLogin` and `AdminDashboard` components.
+- Created `Profile Creation Page` and `Otp Verification Page` components.
+- Integrated **Redux** for state management.

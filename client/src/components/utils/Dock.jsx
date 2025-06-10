@@ -18,14 +18,17 @@ const Dock = () => {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-end min-h-screen">
+    <div className=" bg-black text-white flex flex-col items-center justify-start  relative overflow-hidden">
       {/* Outlet for nested routing */}
-      <div className="flex-1 w-full">
-        <Outlet />
-      </div>
 
       {/* Dock */}
-      <div className="fixed bottom-6 flex items-center gap-8 bg-black/30 backdrop-blur-md px-6 py-4 rounded-2xl shadow-lg border border-purple-500/30">
+      <motion.div
+        className="fixed bottom-6 flex items-center gap-8 bg-black/30 backdrop-blur-md px-6 py-4 rounded-2xl shadow-lg border border-sky-300"
+        style={{
+          "--border-color": "lightblue",
+          "--glow-color": "rgba(0, 191, 255, 0.4)",
+        }}
+      >
         {dockItems.map((item) => (
           <NavLink
             key={item.name}
@@ -35,7 +38,7 @@ const Dock = () => {
             <motion.div
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
-              className="flex items-center justify-center text-purple-400"
+              className="flex items-center justify-center"
             >
               {item.icon}
             </motion.div>
@@ -61,7 +64,7 @@ const Dock = () => {
             Logout
           </span>
         </button>
-      </div>
+      </motion.div>
     </div>
   );
 };

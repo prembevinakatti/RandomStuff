@@ -1,17 +1,57 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { motion } from 'framer-motion';
+import React from "react";
+import { useForm } from "react-hook-form";
+import { motion } from "framer-motion";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const AdminLoginPage = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    reset,
+    formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log("Admin Login Data:", data);
-    // Handle login logic here (e.g., API call)
+    try {
+      const resposne = await axios.post(
+        `http://localhost:3000/api/randomstuff/admin/login`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      if (resposne.data.success) {
+        toast.success(resposne.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+    } catch (error) {
+      toast.error(error.response.data.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      console.log("Error in admin login", error);
+    } finally {
+      reset();
+    }
   };
 
   return (
@@ -29,7 +69,10 @@ const AdminLoginPage = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Email Field */}
           <div>
-            <label htmlFor="email" className="block text-sm mb-1 text-purple-200">
+            <label
+              htmlFor="email"
+              className="block text-sm mb-1 text-purple-200"
+            >
               Email
             </label>
             <input
@@ -37,8 +80,8 @@ const AdminLoginPage = () => {
                 required: "Email is required",
                 pattern: {
                   value: /^\S+@\S+$/i,
-                  message: "Enter a valid email"
-                }
+                  message: "Enter a valid email",
+                },
               })}
               id="email"
               type="email"
@@ -46,19 +89,24 @@ const AdminLoginPage = () => {
               placeholder="admin@example.com"
             />
             {errors.email && (
-              <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>
+              <p className="text-red-400 text-sm mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
           {/* Password Field */}
           <div>
-            <label htmlFor="password" className="block text-sm mb-1 text-purple-200">
+            <label
+              htmlFor="password"
+              className="block text-sm mb-1 text-purple-200"
+            >
               Password
             </label>
             <input
               {...register("password", {
                 required: "Password is required",
-                minLength: { value: 6, message: "Min 6 characters required" }
+                minLength: { value: 6, message: "Min 6 characters required" },
               })}
               id="password"
               type="password"
@@ -66,7 +114,9 @@ const AdminLoginPage = () => {
               placeholder="Enter your password"
             />
             {errors.password && (
-              <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
+              <p className="text-red-400 text-sm mt-1">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
