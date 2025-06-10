@@ -64,7 +64,7 @@ const ProfileCreate = () => {
 
   const renderStep = () => {
     const inputClass =
-      "w-full p-3 rounded-lg bg-gray-900 bg-opacity-30 text-white border border-sky-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-300";
+      "w-full p-3 rounded-lg bg-opacity-30 text-white border border-sky-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-300";
 
     switch (step) {
       case 0:
@@ -230,7 +230,7 @@ const ProfileCreate = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative z-10 bg-transparent border border-sky-300 backdrop-blur-md p-6 rounded-xl w-full max-w-md shadow-[0_0_20px_rgba(0,191,255,0.6)]"
+        className="relative z-10 bg-white/5 border border-sky-300 backdrop-blur-md p-6 rounded-xl w-full max-w-md shadow-[0_0_20px_rgba(0,191,255,0.6)]"
       >
         <h2 className="text-xl font-bold mb-4 text-center">{steps[step]}</h2>
         {renderStep()}
