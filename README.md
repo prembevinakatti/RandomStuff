@@ -121,3 +121,7 @@ RandomStuff/
 - Created `AdminLogin` and `AdminDashboard` components.
 - Created `Profile Creation Page` and `Otp Verification Page` components.
 - Integrated **Redux** for state management.
+
+### 🗓️ **09-06-2025**
+
+- Redesigned All component.

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -113,28 +113,45 @@ const OtpVerificationPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-black relative overflow-hidden">
-      {/* Background Orbs */}
+    <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden p-8">
+      {/* 🔵 Animated Blurry Blue Blob (Top Left) */}
       <motion.div
-        animate={{ y: [0, -20, 0], x: [0, 10, 0, -10, 0] }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          repeatType: "loop",
-          ease: "easeInOut",
+        className="absolute rounded-full bg-sky-500 blur-3xl opacity-50"
+        style={{
+          width: "400px",
+          height: "400px",
+          top: "-100px",
+          left: "-100px",
         }}
-        className="absolute top-10 left-10 w-40 h-40 bg-purple-700 rounded-full opacity-20 blur-3xl"
+        animate={{
+          x: [0, 100, -100, 0],
+          y: [0, 100, -100, 0],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "linear",
+        }}
       />
+
+      {/* 🔵 Animated Blurry Blue Blob (Bottom Right) */}
       <motion.div
-        animate={{ y: [0, -15, 0], x: [0, -15, 0, 15, 0] }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          repeatType: "loop",
-          ease: "easeInOut",
-          delay: 2,
+        className="absolute rounded-full bg-sky-700 blur-3xl opacity-60"
+        style={{
+          width: "300px",
+          height: "300px",
+          bottom: "-50px",
+          right: "-50px",
         }}
-        className="absolute bottom-20 right-20 w-56 h-56 bg-indigo-600 rounded-full opacity-30 blur-3xl"
+        animate={{
+          x: [0, -80, 80, 0],
+          y: [0, -80, 80, 0],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "linear",
+        }}
       />
 
       {/* Card */}
@@ -142,7 +159,7 @@ const OtpVerificationPage = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="bg-white/5 border border-purple-500 bg-opacity-10 backdrop-blur-md p-8 rounded-lg shadow-lg w-full max-w-md flex flex-col items-center"
+        className="bg-transparent border border-sky-300 backdrop-blur-md p-8 rounded-lg shadow-lg w-full max-w-md flex flex-col items-center"
       >
         <h1 className="text-2xl font-semibold text-white mb-4">
           OTP Verification
@@ -156,7 +173,7 @@ const OtpVerificationPage = () => {
         {step === 0 ? (
           <Button
             onClick={handleRequestOtp}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white"
+            className="bg-sky-600 hover:bg-sky-700 text-white"
           >
             Request OTP
           </Button>
@@ -179,7 +196,7 @@ const OtpVerificationPage = () => {
 
             <Button
               onClick={handleVerify}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white w-full"
+              className="bg-sky-600 hover:bg-sky-700 text-white w-full"
             >
               Verify OTP
             </Button>
@@ -188,7 +205,7 @@ const OtpVerificationPage = () => {
               Didn’t receive the OTP?{" "}
               <button
                 onClick={() => toast.info("Resending OTP...")}
-                className="text-indigo-400 hover:underline"
+                className="text-sky-400 hover:underline"
               >
                 Resend
               </button>

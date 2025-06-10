@@ -63,6 +63,9 @@ const ProfileCreate = () => {
   };
 
   const renderStep = () => {
+    const inputClass =
+      "w-full p-3 rounded-lg bg-gray-900 bg-opacity-30 text-white border border-sky-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-300";
+
     switch (step) {
       case 0:
         return (
@@ -73,7 +76,7 @@ const ProfileCreate = () => {
               placeholder="City"
               value={formData.address.city}
               onChange={(e) => handleChange(e, "address")}
-              className="p-2 rounded text-white placeholder:text-white border border-purple-500"
+              className={inputClass}
             />
             <input
               type="text"
@@ -81,7 +84,7 @@ const ProfileCreate = () => {
               placeholder="State"
               value={formData.address.state}
               onChange={(e) => handleChange(e, "address")}
-              className="p-2 rounded text-white placeholder:text-white border border-purple-500"
+              className={inputClass}
             />
             <input
               type="text"
@@ -89,7 +92,7 @@ const ProfileCreate = () => {
               placeholder="Country"
               value={formData.address.country}
               onChange={(e) => handleChange(e, "address")}
-              className="p-2 rounded text-white placeholder:text-white border border-purple-500"
+              className={inputClass}
             />
             <input
               type="text"
@@ -97,7 +100,7 @@ const ProfileCreate = () => {
               placeholder="Pincode"
               value={formData.address.pincode}
               onChange={(e) => handleChange(e, "address")}
-              className="p-2 rounded text-white placeholder:text-white border border-purple-500"
+              className={inputClass}
             />
           </div>
         );
@@ -110,7 +113,7 @@ const ProfileCreate = () => {
               placeholder="Occupation"
               value={formData.professioninfo.occupation}
               onChange={(e) => handleChange(e, "professioninfo")}
-              className="p-2 rounded text-white placeholder:text-white border border-purple-500"
+              className={inputClass}
             />
             <input
               type="text"
@@ -118,7 +121,7 @@ const ProfileCreate = () => {
               placeholder="Organization"
               value={formData.professioninfo.organization}
               onChange={(e) => handleChange(e, "professioninfo")}
-              className="p-2 rounded text-white placeholder:text-white border border-purple-500"
+              className={inputClass}
             />
             <input
               type="text"
@@ -126,7 +129,7 @@ const ProfileCreate = () => {
               placeholder="Experience"
               value={formData.professioninfo.experience}
               onChange={(e) => handleChange(e, "professioninfo")}
-              className="p-2 rounded text-white placeholder:text-white border border-purple-500"
+              className={inputClass}
             />
             <input
               type="text"
@@ -134,7 +137,7 @@ const ProfileCreate = () => {
               placeholder="Skills"
               value={formData.professioninfo.skills}
               onChange={(e) => handleChange(e, "professioninfo")}
-              className="p-2 rounded text-white placeholder:text-white border border-purple-500"
+              className={inputClass}
             />
             <input
               type="text"
@@ -142,7 +145,7 @@ const ProfileCreate = () => {
               placeholder="Education"
               value={formData.professioninfo.education}
               onChange={(e) => handleChange(e, "professioninfo")}
-              className="p-2 rounded text-white placeholder:text-white border border-purple-500"
+              className={inputClass}
             />
           </div>
         );
@@ -155,7 +158,7 @@ const ProfileCreate = () => {
               placeholder="LinkedIn"
               value={formData.social.linkedin}
               onChange={(e) => handleChange(e, "social")}
-              className="p-2 rounded text-white placeholder:text-white border border-purple-500"
+              className={inputClass}
             />
             <input
               type="text"
@@ -163,7 +166,7 @@ const ProfileCreate = () => {
               placeholder="GitHub"
               value={formData.social.github}
               onChange={(e) => handleChange(e, "social")}
-              className="p-2 rounded text-white placeholder:text-white border border-purple-500"
+              className={inputClass}
             />
             <input
               type="text"
@@ -171,7 +174,7 @@ const ProfileCreate = () => {
               placeholder="Portfolio"
               value={formData.social.portfolio}
               onChange={(e) => handleChange(e, "social")}
-              className="p-2 rounded text-white placeholder:text-white border border-purple-500"
+              className={inputClass}
             />
           </div>
         );
@@ -182,25 +185,65 @@ const ProfileCreate = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white flex flex-col items-center justify-center relative p-6">
+    <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden p-8">
+      {/* 🔵 Animated Blurry Blue Blob (Top Left) */}
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        className="absolute rounded-full bg-sky-500 blur-3xl opacity-50"
+        style={{
+          width: "400px",
+          height: "400px",
+          top: "-100px",
+          left: "-100px",
+        }}
+        animate={{
+          x: [0, 100, -100, 0],
+          y: [0, 100, -100, 0],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+      />
+
+      {/* 🔵 Animated Blurry Blue Blob (Bottom Right) */}
+      <motion.div
+        className="absolute rounded-full bg-sky-700 blur-3xl opacity-60"
+        style={{
+          width: "300px",
+          height: "300px",
+          bottom: "-50px",
+          right: "-50px",
+        }}
+        animate={{
+          x: [0, -80, 80, 0],
+          y: [0, -80, 80, 0],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+      />
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="bg-white/5 border border-purple-500 p-6 rounded-xl w-full max-w-md"
+        className="relative z-10 bg-transparent border border-sky-300 backdrop-blur-md p-6 rounded-xl w-full max-w-md shadow-[0_0_20px_rgba(0,191,255,0.6)]"
       >
         <h2 className="text-xl font-bold mb-4 text-center">{steps[step]}</h2>
         {renderStep()}
         <div className="flex justify-between mt-6">
           <button
             onClick={handleSkip}
-            className="bg-gray-500 px-4 py-2 rounded hover:bg-gray-600 transition"
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded transition"
           >
             Skip
           </button>
           <button
             onClick={handleNext}
-            className="bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700 transition"
+            className="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded transition"
           >
             {step === steps.length - 1 ? "Submit" : "Next"}
           </button>
