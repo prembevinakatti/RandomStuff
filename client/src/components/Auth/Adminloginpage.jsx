@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast, Bounce } from "react-toastify";
+// import { useNavigate } from "react-router-dom";
+// import { useDispatch } from "react-redux";
 
 const AdminLoginPage = () => {
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  // const navigate = useNavigate();
+  // const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -13,122 +20,135 @@ const AdminLoginPage = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    console.log("Admin Login Data:", data);
+    setLoading(true);
     try {
-      const resposne = await axios.post(
-        `http://localhost:3000/api/randomstuff/admin/login`,
+      const response = await axios.post(
+        "http://localhost:3000/api/randomstuff/admin/login",
         data,
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           withCredentials: true,
         }
       );
-      if (resposne.data.success) {
-        toast.success(resposne.data.message, {
+
+      if (response.data.success) {
+        toast.success(response.data.message, {
           position: "top-right",
           autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
           theme: "dark",
+          transition: Bounce,
+        });
+        // navigate("/admin/dashboard");
+        // dispatch(setUser(response.data.admin));
+      } else {
+        toast.error("Invalid admin credentials", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "dark",
+          transition: Bounce,
         });
       }
     } catch (error) {
-      toast.error(error.response.data.message, {
+      toast.error(error?.response?.data?.message || "Login failed", {
         position: "top-right",
         autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
         theme: "dark",
+        transition: Bounce,
       });
-      console.log("Error in admin login", error);
+      console.error("Error logging in:", error);
     } finally {
+      setLoading(false);
       reset();
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black flex items-center justify-center px-6 text-white">
+    <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden p-8">
+      {/* 🔵 Floating Blob Top Left */}
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
+        className="absolute rounded-full bg-sky-500 blur-3xl opacity-50"
+        style={{ width: "400px", height: "400px", top: "-100px", left: "-100px" }}
+        animate={{ x: [0, 100, -100, 0], y: [0, 100, -100, 0] }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      />
+      {/* 🔵 Floating Blob Bottom Right */}
+      <motion.div
+        className="absolute rounded-full bg-sky-700 blur-3xl opacity-60"
+        style={{ width: "300px", height: "300px", bottom: "-50px", right: "-50px" }}
+        animate={{ x: [0, -80, 80, 0], y: [0, -80, 80, 0] }}
+        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+      />
+
+      {/* Glass Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="w-full max-w-md bg-gray-800 bg-opacity-40 backdrop-blur-md p-8 rounded-xl border border-purple-600"
+        transition={{ duration: 1 }}
+        className="relative z-10 p-8 rounded-xl w-full max-w-md border border-sky-300 bg-white/5 backdrop-blur-xl shadow-[0_0_20px_rgba(56,189,248,0.6)]"
       >
-        <h2 className="text-3xl font-bold text-purple-300 text-center mb-6">
+        <h2 className="text-3xl font-bold text-sky-300 text-center mb-6">
           Admin Login
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Email Field */}
+          {/* Email */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm mb-1 text-purple-200"
-            >
-              Email
-            </label>
+            <label className="block text-sm mb-1 text-sky-200">Email</label>
             <input
+              type="email"
               {...register("email", {
                 required: "Email is required",
                 pattern: {
                   value: /^\S+@\S+$/i,
-                  message: "Enter a valid email",
+                  message: "Invalid email address",
                 },
               })}
-              id="email"
-              type="email"
-              className="w-full px-4 py-3 rounded-lg bg-gray-900 bg-opacity-30 border border-purple-500 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="admin@example.com"
+              className="w-full px-4 py-3 rounded-lg bg-black bg-opacity-30 border border-sky-400 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-300 disabled:opacity-50"
+              disabled={loading}
             />
             {errors.email && (
-              <p className="text-red-400 text-sm mt-1">
-                {errors.email.message}
-              </p>
+              <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>
             )}
           </div>
 
-          {/* Password Field */}
+          {/* Password */}
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm mb-1 text-purple-200"
-            >
-              Password
-            </label>
-            <input
-              {...register("password", {
-                required: "Password is required",
-                minLength: { value: 6, message: "Min 6 characters required" },
-              })}
-              id="password"
-              type="password"
-              className="w-full px-4 py-3 rounded-lg bg-gray-900 bg-opacity-30 border border-purple-500 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-              placeholder="Enter your password"
-            />
+            <label className="block text-sm mb-1 text-sky-200">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: { value: 6, message: "Minimum 6 characters required" },
+                })}
+                placeholder="Enter your password"
+                className="w-full px-4 py-3 rounded-lg bg-black bg-opacity-30 border border-sky-400 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-300 disabled:opacity-50"
+                disabled={loading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-3 text-sm text-sky-200"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
             {errors.password && (
-              <p className="text-red-400 text-sm mt-1">
-                {errors.password.message}
-              </p>
+              <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
             )}
           </div>
 
-          {/* Submit Button */}
-          <motion.button
-            type="submit"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300"
-          >
-            Login
-          </motion.button>
+          {/* Submit */}
+          <div>
+            <button
+              type="submit"
+              className="w-full py-3 rounded-lg bg-sky-400 hover:bg-sky-500 transition-colors font-bold text-white shadow-md disabled:opacity-50"
+              disabled={loading}
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
+          </div>
         </form>
       </motion.div>
     </div>
