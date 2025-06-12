@@ -125,3 +125,7 @@ RandomStuff/
 ### 🗓️ **09-06-2025**
 
 - Redesigned All component.
+
+### **12-06-2025**
+
+- Redesigned `AdminLogin` and `AdminDashboard` components.
