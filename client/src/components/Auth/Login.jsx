@@ -94,7 +94,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] text-white flex items-center justify-center px-4 relative overflow-hidden">
+    <div className="min-h-screen py-20 bg-[#0f0f0f] text-white flex items-center justify-center px-4 relative overflow-hidden">
       {/* Grid background overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none z-0" />
 

@@ -16,17 +16,16 @@ module.exports.createProfile = async (req, res) => {
       return res.status(400).json({ message: "Profile already exists" });
     }
 
-    const profileimage = data.username
-      ? `https://avatar.iran.liara.run/username?username=${data.username}`
-      : undefined;
-
-    const profile = new Profile({ ...data, profileimage, userId });
-    await profile.save();
-
     const user = await authModel.findById(userId);
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    const profileimage = `https://avatar.iran.liara.run/username?username=${user.username}`;
+
+    const profile = new Profile({ ...data, profileimage, userId });
+    await profile.save();
 
     user.profileId = profile._id;
     await user.save();

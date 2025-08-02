@@ -22,7 +22,7 @@ const UserHomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white px-4 md:px-10 py-12 font-sans">
+    <div className="min-h-screen bg-black text-white px-4 md:px-10 py-15 font-sans">
       {/* Hero Section */}
       <section className="max-w-6xl mx-auto text-center space-y-6 mb-16">
         <h1 className="text-4xl md:text-6xl mt-3 font-extrabold tracking-tight leading-tight">
@@ -87,7 +87,7 @@ const UserHomePage = () => {
 
       {/* Footer */}
       <footer className="border-t border-white/10 py-10 text-sm text-gray-600 text-center">
-        © {new Date().getFullYear()} ProjectVerse • Built with ❤️ by Prem
+        © {new Date().getFullYear()} ProjectVerse • Built with ❤️ by Onkar
       </footer>
     </div>
   );

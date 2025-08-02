@@ -1,10 +1,10 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { FiHome, FiLogOut, FiUser, FiUpload, FiSearch } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { FaRocket } from "react-icons/fa";
 import { setUser } from "@/redux/authSlice";
+import { motion } from "framer-motion";
 
 const Dock = () => {
   const navigate = useNavigate();
@@ -69,7 +69,7 @@ const Dock = () => {
           onClick={() => navigate("/register")}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
-          className="flex items-center gap-2 cursor-pointer bg-[#BAFF38] text-black font-bold px-6 py-3 rounded-full shadow-md hover:shadow-lime-400/50 transition"
+          className="w-[200px]  flex items-center gap-2 cursor-pointer bg-[#BAFF38] text-black font-bold px-6 py-3 rounded-full shadow-md hover:shadow-lime-400/50 transition"
         >
           <FaRocket className="animate-bounce" />
           Explore Projects
