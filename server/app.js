@@ -32,6 +32,7 @@ app.use(passport.session());
 
 const corsOption = {
   origin: "https://randomstuff-1.onrender.com",
+  methods: "GET,POST,PUT,DELETE,OPTIONS",
   credentials: true,
 };
 app.use(cors(corsOption));
