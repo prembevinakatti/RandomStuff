@@ -102,7 +102,12 @@ module.exports.login = async (req, res) => {
         .json({ message: "Email or Password is incorrect" });
     }
 
-    const AuthToken = jwt.sign({ user: user }, process.env.AUTH_JWT_TOKEN);
+    const AuthToken = jwt.sign({ user: user }, process.env.AUTH_JWT_TOKEN, {
+      httpOnly: true, // Prevent JavaScript from accessing the cookie
+      secure: true, // Ensure cookie is sent only over HTTPS
+      sameSite: "None", // Required for cross-origin requests
+      maxAge: 24 * 60 * 60 * 1000,
+    });
     res.cookie("AuthToken", AuthToken);
 
     return res
