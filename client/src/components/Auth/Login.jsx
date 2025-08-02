@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { motion } from "framer-motion";
 import axios from "axios";
 import { Bounce, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/authSlice";
+import { FaGithub, FaGoogle } from "react-icons/fa";
+import { Separator } from "@/components/ui/separator";
+import { motion } from "framer-motion";
 
 const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+
   const {
     register,
     handleSubmit,
@@ -18,6 +22,25 @@ const LoginPage = () => {
   } = useForm();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setInitialLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // const handleGoogleLogin = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `http://localhost:3000/api/randomstuff/oauth/google/callback`
+  //     );
+
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     console.log("Error Logging with Google  : ", error);
+  //   }
+  // };
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -39,7 +62,15 @@ const LoginPage = () => {
           transition: Bounce,
         });
         dispatch(setUser(response.data.user));
-        navigate("/dashboard");
+        if (response.data.user.isVerified) {
+          if (response.data.user.profileId) {
+            navigate("/home");
+          } else {
+            navigate("/profile-create");
+          }
+        } else {
+          navigate("/otp-verification");
+        }
       } else {
         toast.error("Invalid username or password", {
           position: "top-right",
@@ -63,148 +94,181 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden p-8">
-      {/* 🔵 Animated Blurry Blue Blob (Top Left) */}
-      <motion.div
-        className="absolute rounded-full bg-sky-500 blur-3xl opacity-50"
-        style={{
-          width: "400px",
-          height: "400px",
-          top: "-100px",
-          left: "-100px",
-        }}
-        animate={{
-          x: [0, 100, -100, 0],
-          y: [0, 100, -100, 0],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
+    <div className="min-h-screen bg-[#0f0f0f] text-white flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Grid background overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none z-0" />
 
-      {/* 🔵 Animated Blurry Blue Blob (Bottom Right) */}
-      <motion.div
-        className="absolute rounded-full bg-sky-700 blur-3xl opacity-60"
-        style={{
-          width: "300px",
-          height: "300px",
-          bottom: "-50px",
-          right: "-50px",
-        }}
-        animate={{
-          x: [0, -80, 80, 0],
-          y: [0, -80, 80, 0],
-        }}
-        transition={{
-          duration: 15,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
-
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-        className="relative z-10 p-8 rounded-xl w-full max-w-md border border-sky-300 bg-white/5 backdrop-blur-xl shadow-[0_0_20px_rgba(0,191,255,0.6)]"
-        style={{
-          "--border-color": "lightblue",
-          "--glow-color": "rgba(0, 191, 255, 0.4)",
-        }}
-      >
-        <h2 className="text-3xl font-bold text-white text-center mb-6">
-          Login
-        </h2>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Email Field */}
-          <div>
-            <label className="block text-sm text-white mb-1">Email</label>
-            <input
-              type="email"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^\S+@\S+$/i,
-                  message: "Invalid email address",
-                },
-              })}
-              className="w-full p-3 rounded-lg  bg-opacity-30 text-white border border-sky-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-300 disabled:opacity-50"
-              placeholder="Enter your email"
-              disabled={loading}
-            />
-            {errors.email && (
-              <p className="text-red-400 text-sm mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          {/* Password Field */}
-          <div>
-            <label className="block text-sm text-white mb-1">Password</label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                {...register("password", {
-                  required: "Password is required",
-                })}
-                className="w-full p-3 rounded-lg  bg-opacity-30 text-white border border-sky-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-300 disabled:opacity-50"
-                placeholder="Enter your password"
-                disabled={loading}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-3 text-sm text-white focus:outline-none"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
-            </div>
-            {errors.password && (
-              <p className="text-red-400 text-sm mt-1">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-
-          {/* Submit Button */}
-          <div>
-            <button
-              type="submit"
-              className="w-full py-3 rounded-lg bg-sky-400 hover:bg-sky-500 transition-colors font-bold text-white shadow-md disabled:opacity-50"
-              disabled={loading}
-            >
-              {loading ? "Logging in..." : "Login"}
-            </button>
-          </div>
-        </form>
-
-        {/* Extra links */}
-        <div className="text-sm text-center mt-6 space-y-2 text-white">
-          <p>
-            Forgot your password?{" "}
-            <span
-              onClick={() => navigate("/forgot-password")}
-              className="underline cursor-pointer text-sky-400 hover:text-sky-300"
-            >
-              Reset here
-            </span>
-          </p>
-          <p>
-            Don't have an account?{" "}
-            <span
-              onClick={() => navigate("/register")}
-              className="underline cursor-pointer text-sky-400 hover:text-sky-300"
-            >
-              Sign up
-            </span>
+      <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 items-center gap-8 p-6">
+        {/* Left Section */}
+        <div className="space-y-6 px-4">
+          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
+            Dive Into RandomStuff <br />
+            Build. Share. Repeat.
+          </h1>
+          <p className="text-gray-400 text-lg">
+            Whether you're just starting out or shipping your 50th side project,
+            RandomStuff is where devs hang out, collaborate, and grow.
+            <br />
+            Show off your work, explore ideas, and connect with builders like
+            you.
           </p>
         </div>
-      </motion.div>
+
+        {/* Right Login Card with loader + animation */}
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="p-8 bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl shadow-xl w-full min-h-[350px] transition-all flex flex-col justify-center"
+        >
+          {initialLoading ? (
+            <div className="flex flex-col items-center justify-center h-[200px] gap-4">
+              <div className="w-10 h-10 border-4 border-lime-400 border-t-transparent rounded-full animate-spin" />
+              <p className="text-lime-400 text-sm font-medium animate-pulse">
+                Loading login form...
+              </p>
+            </div>
+          ) : (
+            <>
+              <motion.h2
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-3xl font-bold mb-2 transition-all"
+              >
+                Welcome Back, Builder 👋
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-gray-400 mb-6"
+              >
+                Log in to manage your projects and keep building cool stuff.
+              </motion.p>
+
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <label className="text-sm mb-1 block">Email address</label>
+                  <input
+                    type="email"
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /^\S+@\S+$/i,
+                        message: "Invalid email address",
+                      },
+                    })}
+                    placeholder="you@example.com"
+                    disabled={loading}
+                    className="w-full px-4 py-3 rounded-md bg-[#1a1a1a] border border-[#333] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-lime-400"
+                  />
+                  {errors.email && (
+                    <p className="text-red-400 text-sm mt-1">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <label className="text-sm mb-1 block">Password</label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      {...register("password", {
+                        required: "Password is required",
+                      })}
+                      placeholder="••••••••"
+                      disabled={loading}
+                      className="w-full px-4 py-3 rounded-md bg-[#1a1a1a] border border-[#333] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-lime-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-sm text-gray-400"
+                    >
+                      {showPassword ? "Hide" : "Show"}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <p className="text-red-400 text-sm mt-1">
+                      {errors.password.message}
+                    </p>
+                  )}
+                </motion.div>
+
+                <motion.button
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  type="submit"
+                  disabled={loading}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ delay: 0.6 }}
+                  className="w-full py-3 rounded-full bg-[#BAFF38] hover:bg-lime-300 transition-all font-bold text-black shadow-md hover:shadow-lime-500/40 disabled:opacity-60"
+                >
+                  {loading ? "Logging in..." : "Login"}
+                </motion.button>
+              </form>
+
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <Separator className="my-4 bg-gray-600" />
+              </motion.div>
+
+              {/* <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="mt-6 flex flex-col gap-3"
+              >
+                <button
+                  onClick={() => {
+                    handleGoogleLogin();
+                  }}
+                  className="flex items-center justify-center gap-3 w-full py-3 border border-gray-700 rounded-full bg-[#1a1a1a] text-white hover:bg-[#111] transition"
+                >
+                  <FaGoogle /> Login with Google
+                </button>
+                <button className="flex items-center justify-center gap-3 w-full py-3 border border-gray-700 rounded-full bg-[#1a1a1a] text-white hover:bg-[#111] transition">
+                  <FaGithub /> Login with GitHub
+                </button>
+              </motion.div> */}
+
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="mt-2 text-sm text-center text-gray-400 space-y-2"
+              >
+                <p>
+                  Don’t have an account?{" "}
+                  <motion.span
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    onClick={() => navigate("/register")}
+                    className="text-lime-400 cursor-pointer hover:underline"
+                  >
+                    Sign up
+                  </motion.span>
+                </p>
+              </motion.div>
+            </>
+          )}
+        </motion.div>
+      </div>
     </div>
   );
 };

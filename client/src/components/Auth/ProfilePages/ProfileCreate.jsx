@@ -3,12 +3,77 @@ import { motion } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
-const steps = ["Address", "Profession", "Social"];
+const steps = ["address", "professioninfo", "social"];
+
+const techOptions = [
+  "JavaScript",
+  "React",
+  "Node.js",
+  "MongoDB",
+  "Python",
+  "TypeScript",
+  "Tailwind CSS",
+  "Docker",
+  "Kubernetes",
+  "PostgreSQL",
+  "GraphQL",
+  "Next.js",
+  "Express.js",
+  "Vue.js",
+  "Angular",
+  "Java",
+  "Spring Boot",
+  "Firebase",
+  "AWS",
+  "Azure",
+  "SASS/SCSS",
+  "Redis",
+  "MySQL",
+  "CI/CD",
+  "Jenkins",
+  "Git",
+  "Figma",
+  "Linux",
+  "Nginx",
+  "WebSockets",
+  "Webpack",
+  "Babel",
+  "Prisma",
+  "Supabase",
+  "Vite",
+  "Flutter",
+  "Django",
+  "Flask",
+  "Ruby on Rails",
+  "Other",
+];
+
+const filterEmptyFields = (obj) => {
+  const cleaned = {};
+  Object.entries(obj).forEach(([key, value]) => {
+    if (typeof value === "object" && value !== null) {
+      const nested = filterEmptyFields(value);
+      if (Object.keys(nested).length > 0) cleaned[key] = nested;
+    } else if (value !== "") {
+      cleaned[key] = value;
+    }
+  });
+  return cleaned;
+};
 
 const ProfileCreate = () => {
   const [step, setStep] = useState(0);
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     contactno: "",
     profileimage: "",
@@ -17,7 +82,7 @@ const ProfileCreate = () => {
       occupation: "",
       organization: "",
       experience: "",
-      skills: "",
+      skills: [], // array now
       education: "",
     },
     social: { linkedin: "", github: "", portfolio: "" },
@@ -26,18 +91,36 @@ const ProfileCreate = () => {
 
   const handleChange = (e, nestedKey) => {
     const { name, value } = e.target;
-    if (nestedKey) {
+    setFormData((prev) => ({
+      ...prev,
+      [nestedKey]: { ...prev[nestedKey], [name]: value },
+    }));
+  };
+
+  const handleAddSkill = (skill) => {
+    if (!formData.professioninfo.skills.includes(skill)) {
       setFormData((prev) => ({
         ...prev,
-        [nestedKey]: { ...prev[nestedKey], [name]: value },
+        professioninfo: {
+          ...prev.professioninfo,
+          skills: [...prev.professioninfo.skills, skill],
+        },
       }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
+  const handleRemoveSkill = (skill) => {
+    setFormData((prev) => ({
+      ...prev,
+      professioninfo: {
+        ...prev.professioninfo,
+        skills: prev.professioninfo.skills.filter((s) => s !== skill),
+      },
+    }));
+  };
+
   const handleSkip = () => {
-    if (step < steps.length - 1) setStep(step + 1);
+    if (step < steps.length - 1) setStep((prev) => prev + 1);
   };
 
   const handleNext = () => {
@@ -50,203 +133,171 @@ const ProfileCreate = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("/api/profile", formData, {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
+      const cleaned = filterEmptyFields({
+        ...formData,
+        professioninfo: {
+          ...formData.professioninfo,
+          skills: formData.professioninfo.skills.join(", "),
+        },
       });
-      console.log(response.data);
-      toast.success("Profile created successfully!");
+
+      const response = await axios.post(
+        "http://localhost:3000/api/randomstuff/profile/createProfile",
+        { data: cleaned },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      if (response.data.success) {
+        toast.success("Profile created successfully!");
+        setTimeout(() => navigate("/home"), 2000);
+      }
     } catch (error) {
-      console.log("Error creating profile: ", error);
       toast.error("Failed to create profile.");
+      console.log("Error in Profile Creation : ", error);
     }
   };
 
+  const inputClass =
+    "w-full px-4 py-2 rounded-md bg-zinc-800 text-white border border-white/10";
+
   const renderStep = () => {
-    const inputClass =
-      "w-full p-3 rounded-lg bg-opacity-30 text-white border border-sky-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-300";
+    const currentKey = steps[step];
+    return (
+      <div className="space-y-4">
+        {Object.entries(formData[currentKey]).map(([field, value]) => {
+          if (currentKey === "professioninfo" && field === "skills") {
+            return (
+              <div key={field}>
+                <label className="text-sm text-gray-300 mb-1 block capitalize">
+                  {field}
+                </label>
+                <Select onValueChange={handleAddSkill}>
+                  <SelectTrigger className="w-full bg-black/5 text-white border-white/10">
+                    <SelectValue placeholder="Select a skill" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-black text-white border-white/10">
+                    {techOptions.map((skill) => (
+                      <SelectItem
+                        key={skill}
+                        value={skill}
+                        className="hover:bg-lime-400 hover:text-black cursor-pointer"
+                      >
+                        {skill}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-    switch (step) {
-      case 0:
-        return (
-          <div className="flex flex-col gap-4">
-            <input
-              type="text"
-              name="city"
-              placeholder="City"
-              value={formData.address.city}
-              onChange={(e) => handleChange(e, "address")}
-              className={inputClass}
-            />
-            <input
-              type="text"
-              name="state"
-              placeholder="State"
-              value={formData.address.state}
-              onChange={(e) => handleChange(e, "address")}
-              className={inputClass}
-            />
-            <input
-              type="text"
-              name="country"
-              placeholder="Country"
-              value={formData.address.country}
-              onChange={(e) => handleChange(e, "address")}
-              className={inputClass}
-            />
-            <input
-              type="text"
-              name="pincode"
-              placeholder="Pincode"
-              value={formData.address.pincode}
-              onChange={(e) => handleChange(e, "address")}
-              className={inputClass}
-            />
-          </div>
-        );
-      case 1:
-        return (
-          <div className="flex flex-col gap-4">
-            <input
-              type="text"
-              name="occupation"
-              placeholder="Occupation"
-              value={formData.professioninfo.occupation}
-              onChange={(e) => handleChange(e, "professioninfo")}
-              className={inputClass}
-            />
-            <input
-              type="text"
-              name="organization"
-              placeholder="Organization"
-              value={formData.professioninfo.organization}
-              onChange={(e) => handleChange(e, "professioninfo")}
-              className={inputClass}
-            />
-            <input
-              type="text"
-              name="experience"
-              placeholder="Experience"
-              value={formData.professioninfo.experience}
-              onChange={(e) => handleChange(e, "professioninfo")}
-              className={inputClass}
-            />
-            <input
-              type="text"
-              name="skills"
-              placeholder="Skills"
-              value={formData.professioninfo.skills}
-              onChange={(e) => handleChange(e, "professioninfo")}
-              className={inputClass}
-            />
-            <input
-              type="text"
-              name="education"
-              placeholder="Education"
-              value={formData.professioninfo.education}
-              onChange={(e) => handleChange(e, "professioninfo")}
-              className={inputClass}
-            />
-          </div>
-        );
-      case 2:
-        return (
-          <div className="flex flex-col gap-4">
-            <input
-              type="text"
-              name="linkedin"
-              placeholder="LinkedIn"
-              value={formData.social.linkedin}
-              onChange={(e) => handleChange(e, "social")}
-              className={inputClass}
-            />
-            <input
-              type="text"
-              name="github"
-              placeholder="GitHub"
-              value={formData.social.github}
-              onChange={(e) => handleChange(e, "social")}
-              className={inputClass}
-            />
-            <input
-              type="text"
-              name="portfolio"
-              placeholder="Portfolio"
-              value={formData.social.portfolio}
-              onChange={(e) => handleChange(e, "social")}
-              className={inputClass}
-            />
-          </div>
-        );
+                {value.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {value.map((skill) => (
+                      <span
+                        key={skill}
+                        className="bg-lime-400 text-black px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2"
+                      >
+                        {skill}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveSkill(skill)}
+                          className="text-black hover:text-red-600 font-bold"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          }
 
-      default:
-        return <div>Step not found</div>;
-    }
+          if (field === "experience") {
+            return (
+              <div key={field}>
+                <label className="text-sm text-gray-300 mb-1 block capitalize">
+                  {field}
+                </label>
+                <select
+                  name={field}
+                  value={value}
+                  onChange={(e) => handleChange(e, currentKey)}
+                  className={inputClass}
+                >
+                  <option value="">Select Experience</option>
+                  <option value="0-1 years">0-1 years</option>
+                  <option value="1-3 years">1-3 years</option>
+                  <option value="3-5 years">3-5 years</option>
+                  <option value="5+ years">5+ years</option>
+                </select>
+              </div>
+            );
+          }
+
+          return (
+            <div key={field}>
+              <label className="text-sm text-gray-300 mb-1 block capitalize">
+                {field}
+              </label>
+              <input
+                type="text"
+                name={field}
+                value={value}
+                onChange={(e) => handleChange(e, currentKey)}
+                className={inputClass}
+              />
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden p-8">
-      {/* 🔵 Animated Blurry Blue Blob (Top Left) */}
-      <motion.div
-        className="absolute rounded-full bg-sky-500 blur-3xl opacity-50"
-        style={{
-          width: "400px",
-          height: "400px",
-          top: "-100px",
-          left: "-100px",
-        }}
-        animate={{
-          x: [0, 100, -100, 0],
-          y: [0, 100, -100, 0],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
-
-      {/* 🔵 Animated Blurry Blue Blob (Bottom Right) */}
-      <motion.div
-        className="absolute rounded-full bg-sky-700 blur-3xl opacity-60"
-        style={{
-          width: "300px",
-          height: "300px",
-          bottom: "-50px",
-          right: "-50px",
-        }}
-        animate={{
-          x: [0, -80, 80, 0],
-          y: [0, -80, 80, 0],
-        }}
-        transition={{
-          duration: 15,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
+    <div className="min-h-screen bg-[#0f0f0f] text-white flex items-center justify-center px-4 relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none z-0" />
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative z-10 bg-white/5 border border-sky-300 backdrop-blur-md p-6 rounded-xl w-full max-w-md shadow-[0_0_20px_rgba(0,191,255,0.6)]"
+        className="relative z-10 bg-white/5 border border-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-full max-w-md"
       >
-        <h2 className="text-xl font-bold mb-4 text-center">{steps[step]}</h2>
+        {/* Step indicator */}
+        <div className="flex justify-center mb-6 gap-2">
+          {steps.map((_, i) => (
+            <span
+              key={i}
+              className={`w-3 h-3 rounded-full transition ${
+                i === step ? "bg-lime-400 scale-110" : "bg-gray-600"
+              }`}
+            />
+          ))}
+        </div>
+
+        <h2 className="text-2xl font-bold text-center mb-4">
+          Step {step + 1} of {steps.length}:{" "}
+          <span className="text-lime-400 capitalize">{steps[step]}</span>
+        </h2>
+
         {renderStep()}
+
         <div className="flex justify-between mt-6">
-          <button
+          <Button
+            variant="ghost"
             onClick={handleSkip}
-            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded transition"
+            className="bg-gray-700 hover:bg-gray-600 text-white"
           >
             Skip
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleNext}
-            className="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded transition"
+            className="bg-lime-400 hover:bg-lime-300 text-black font-semibold shadow-md"
           >
             {step === steps.length - 1 ? "Submit" : "Next"}
-          </button>
+          </Button>
         </div>
       </motion.div>
 

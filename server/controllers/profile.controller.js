@@ -16,7 +16,11 @@ module.exports.createProfile = async (req, res) => {
       return res.status(400).json({ message: "Profile already exists" });
     }
 
-    const profile = new Profile({ ...data, userId });
+    const profileimage = data.username
+      ? `https://avatar.iran.liara.run/username?username=${data.username}`
+      : undefined;
+
+    const profile = new Profile({ ...data, profileimage, userId });
     await profile.save();
 
     const user = await authModel.findById(userId);
@@ -90,7 +94,6 @@ module.exports.updateProfile = async (req, res) => {
     res.status(500).json({ message: "Error updating profile", error });
   }
 };
-
 
 module.exports.getAllProfiles = async (req, res) => {
   try {

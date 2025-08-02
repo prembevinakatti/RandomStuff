@@ -1,16 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const OtpVerificationPage = () => {
   const [step, setStep] = useState(0);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [isRequestingOtp, setIsRequestingOtp] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const { user } = useSelector((store) => store.auth);
+  const [resendTimer, setResendTimer] = useState(0);
+  const navigate = useNavigate();
 
   const handleRequestOtp = async () => {
+    setIsRequestingOtp(true);
     try {
       const response = await axios.post(
         `http://localhost:3000/api/randomstuff/auth/requestOtp`,
@@ -23,34 +31,26 @@ const OtpVerificationPage = () => {
         }
       );
       if (response.data.success) {
-        toast.success("OTP sent to email successfully.", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        toast.success("OTP sent to email successfully.");
+        setStep(1);
+        setResendTimer(60);
       }
-      console.log("response", response.data);
     } catch (error) {
-      console.log("error", error);
-      toast.error("Something went wrong.", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toast.error("Something went wrong.");
+    } finally {
+      setIsRequestingOtp(false);
     }
-
-    setStep(1);
   };
+
+  useEffect(() => {
+    let timer;
+    if (resendTimer > 0) {
+      timer = setTimeout(() => {
+        setResendTimer(resendTimer - 1);
+      }, 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendTimer]);
 
   const handleChange = (e, index) => {
     const { value } = e.target;
@@ -58,20 +58,17 @@ const OtpVerificationPage = () => {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
-      // Move focus to next box if digit entered
       if (value !== "" && index < 5) {
-        const nextInput = document.getElementById(`otp-${index + 1}`);
-        if (nextInput) nextInput.focus();
+        document.getElementById(`otp-${index + 1}`)?.focus();
       }
-      // Move back if empty and index > 0
       if (value === "" && index > 0) {
-        const prevInput = document.getElementById(`otp-${index - 1}`);
-        if (prevInput) prevInput.focus();
+        document.getElementById(`otp-${index - 1}`)?.focus();
       }
     }
   };
 
   const handleVerify = async () => {
+    setIsVerifying(true);
     const enteredOtp = Number(otp.join(""));
     try {
       const response = await axios.post(
@@ -84,131 +81,85 @@ const OtpVerificationPage = () => {
           withCredentials: true,
         }
       );
-      console.log("response", response.data);
       if (response.data.success) {
-        toast.success("OTP verified successfully.", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        toast.success("OTP verified successfully.");
+        if (user.profileId) {
+          navigate("/home");
+        } else {
+          navigate("/profile-create");
+        }
       }
     } catch (error) {
-      toast.error("Invalid OTP. Please try again.", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      console.log("Error", error);
+      toast.error("Invalid OTP. Please try again.");
+    } finally {
+      setIsVerifying(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden p-8">
-      {/* 🔵 Animated Blurry Blue Blob (Top Left) */}
+    <div className="min-h-screen flex items-center justify-center px-4">
       <motion.div
-        className="absolute rounded-full bg-sky-500 blur-3xl opacity-50"
-        style={{
-          width: "400px",
-          height: "400px",
-          top: "-100px",
-          left: "-100px",
-        }}
-        animate={{
-          x: [0, 100, -100, 0],
-          y: [0, 100, -100, 0],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
-
-      {/* 🔵 Animated Blurry Blue Blob (Bottom Right) */}
-      <motion.div
-        className="absolute rounded-full bg-sky-700 blur-3xl opacity-60"
-        style={{
-          width: "300px",
-          height: "300px",
-          bottom: "-50px",
-          right: "-50px",
-        }}
-        animate={{
-          x: [0, -80, 80, 0],
-          y: [0, -80, 80, 0],
-        }}
-        transition={{
-          duration: 15,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
-
-      {/* Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="bg-transparent border border-sky-300 backdrop-blur-md p-8 rounded-lg shadow-lg w-full max-w-md flex flex-col items-center"
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-2xl p-8 text-white"
       >
-        <h1 className="text-2xl font-semibold text-white mb-4">
-          OTP Verification
-        </h1>
-        <p className="text-gray-300 text-center mb-6">
+        <h2 className="text-3xl font-bold text-lime-400 text-center mb-3">
+          {step === 0 ? "Request OTP" : "Verify OTP"}
+        </h2>
+        <p className="text-gray-300 text-sm text-center mb-6">
           {step === 0
-            ? "Click below to request an OTP for verification."
-            : "Please enter the 6-digit OTP sent to your email or phone."}
+            ? "Click the button below to request an OTP."
+            : "Enter the 6-digit OTP sent to your registered email."}
         </p>
 
         {step === 0 ? (
           <Button
             onClick={handleRequestOtp}
-            className="bg-sky-600 hover:bg-sky-700 text-white"
+            disabled={isRequestingOtp}
+            className="w-full py-3 rounded-lg bg-lime-400 hover:bg-lime-300 text-black font-semibold"
           >
-            Request OTP
+            {isRequestingOtp ? "Sending..." : "Send OTP"}
           </Button>
         ) : (
           <>
-            {/* OTP Boxes */}
-            <div className="flex justify-between gap-2 mb-4">
-              {otp.map((digit, index) => (
+            <div className="flex justify-between gap-2 mb-6">
+              {otp.map((digit, i) => (
                 <Input
-                  key={index}
-                  id={`otp-${index}`}
+                  key={i}
+                  id={`otp-${i}`}
                   type="text"
                   maxLength={1}
                   value={digit}
-                  onChange={(e) => handleChange(e, index)}
-                  className="w-12 h-12 text-center text-lg font-semibold text-black bg-white"
+                  onChange={(e) => handleChange(e, i)}
+                  className="w-12 h-12 text-center text-lg font-semibold text-black bg-white rounded-md"
                 />
               ))}
             </div>
 
             <Button
               onClick={handleVerify}
-              className="bg-sky-600 hover:bg-sky-700 text-white w-full"
+              disabled={isVerifying}
+              className="w-full py-3 rounded-lg bg-lime-400 hover:bg-lime-300 text-black font-semibold"
             >
-              Verify OTP
+              {isVerifying ? "Verifying..." : "Verify OTP"}
             </Button>
 
-            <p className="text-gray-400 text-sm mt-4">
-              Didn’t receive the OTP?{" "}
-              <button
-                onClick={() => toast.info("Resending OTP...")}
-                className="text-sky-400 hover:underline"
-              >
-                Resend
-              </button>
+            <p className="text-sm text-gray-400 text-center mt-4">
+              Didn't get the OTP?{" "}
+              {resendTimer > 0 ? (
+                <span className="text-lime-300 font-semibold">
+                  Resend in {resendTimer}s
+                </span>
+              ) : (
+                <button
+                  className="text-lime-300 cursor-pointer hover:underline"
+                  onClick={handleRequestOtp}
+                  disabled={isRequestingOtp}
+                >
+                  Resend
+                </button>
+              )}
             </p>
           </>
         )}

@@ -1,26 +1,33 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
+  const { user } = useSelector((store) => store.auth);
   return (
-    <motion.div
-      className="fixed w-4/5 top-6 left-1/2 transform -translate-x-1/2 z-50 bg-black/30 backdrop-blur-md px-6 py-3 rounded-2xl shadow-lg border border-sky-300 flex items-center justify-center"
-      style={{
-        "--border-color": "lightblue",
-        "--glow-color": "rgba(0, 191, 255, 0.4)",
-      }}
-      initial={{ opacity: 0, y: -50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <motion.h1
-        whileHover={{ scale: 1.1, color: "#87CEEB" }} // Light blue color on hover
-        transition={{ duration: 0.3 }}
-        className="text-lg font-semibold text-white cursor-pointer tracking-wide"
+    <nav className="fixed top-0 left-0 w-full z-50  bg-black backdrop-blur-sm border-b border-white/10 px-6 py-3 flex items-center justify-between">
+      {/* Logo */}
+      <Link
+        to="/"
+        className={` w-full  font-semibold text-white ${
+          user ? "text-center text-2xl" : " text-start text-xl"
+        } tracking-tight`}
       >
-        ProjectShowcase
-      </motion.h1>
-    </motion.div>
+        <span className="text-lime-400">Random</span>Stuff
+      </Link>
+
+      {!user && (
+        <div className="flex gap-4">
+          <Link
+            to="/login"
+            className="relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-lime-400 border border-lime-400 rounded-md hover:bg-lime-400 hover:text-black transition-all duration-300 group"
+          >
+            <span className="absolute inset-0 transform scale-0 group-hover:scale-100 bg-lime-400 opacity-10 rounded-md transition-transform duration-300"></span>
+            Login
+          </Link>
+        </div>
+      )}
+    </nav>
   );
 };
 

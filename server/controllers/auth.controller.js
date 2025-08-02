@@ -7,9 +7,9 @@ const { sendOtpEmail } = require("../utils/mailer");
 
 module.exports.register = async (req, res) => {
   try {
-    const { username, email, contactno, password } = req.body;
+    const { username, email, contactNumber, password } = req.body;
 
-    if (!username || !email || !contactno || !password) {
+    if (!username || !email || !contactNumber || !password) {
       return res.status(404).json({ message: "All fields are required" });
     }
 
@@ -24,7 +24,7 @@ module.exports.register = async (req, res) => {
     const newUser = await authModel.create({
       username,
       password,
-      contactno,
+      contactNumber,
       email,
     });
 
@@ -34,8 +34,38 @@ module.exports.register = async (req, res) => {
     const mailOption = {
       from: process.env.EMAIL_USER,
       to: newUser?.email,
-      subject: "Welcome to RandomStuff",
-      text: `Hello ${newUser?.username},\n\nWelcome to our website! We’re glad to have you on board.\n\nBest regards,\nTeam`,
+      subject: "🎉 Welcome to RandomStuff – Let's Build Something Great!",
+      html: `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+      <h2>Hey ${newUser?.username},</h2>
+      <p>Welcome to <strong>RandomStuff</strong>! 🚀</p>
+      <p>We're thrilled to have you join our creative community of builders, developers, and innovators.</p>
+      
+      <p>Here’s what you can do next:</p>
+      <ul>
+        <li>🚀 Share your projects and ideas</li>
+        <li>💬 Connect and collaborate with others</li>
+        <li>🔥 Explore trending creations</li>
+      </ul>
+
+      <p>If you ever need help, feel free to reach out to our support team.</p>
+
+      <p>Let’s build something amazing together!</p>
+
+      <br />
+      <p>Cheers,</p>
+      <p><strong>Team RandomStuff</strong></p>
+
+      <hr style="margin: 20px 0;" />
+
+      <p style="font-size: 14px;">
+        Developed with ❤️ by <strong>Onkar Bevinakatti</strong><br />
+        <a href="https://onkarportfolio.onrender.com/" target="_blank" style="color: limegreen; text-decoration: none;">
+          View My Portfolio
+        </a>
+      </p>
+    </div>
+  `,
     };
 
     await transporter.sendMail(mailOption);

@@ -25,9 +25,9 @@ const ProfileSchema = new mongoose.Schema({
     github: String,
     portfolio: String,
   },
-  projects: {
-    totalprojects: String,
-    projectsforshowcase: String,
+  totalProjects: {
+    type: Number,
+    default: 0,
   },
 });
 

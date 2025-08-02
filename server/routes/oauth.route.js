@@ -2,10 +2,8 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 
-// Import passport strategies setup to register strategies
 require("../config/passport");
 
-// Now you can use the strategies:
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })

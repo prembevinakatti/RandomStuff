@@ -3,14 +3,10 @@ import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { toast, Bounce } from "react-toastify";
-// import { useNavigate } from "react-router-dom";
-// import { useDispatch } from "react-redux";
 
 const AdminLoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  // const navigate = useNavigate();
-  // const dispatch = useDispatch();
 
   const {
     register,
@@ -55,7 +51,6 @@ const AdminLoginPage = () => {
         theme: "dark",
         transition: Bounce,
       });
-      console.error("Error logging in:", error);
     } finally {
       setLoading(false);
       reset();
@@ -63,37 +58,28 @@ const AdminLoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden p-8">
-      {/* 🔵 Floating Blob Top Left */}
-      <motion.div
-        className="absolute rounded-full bg-sky-500 blur-3xl opacity-50"
-        style={{ width: "400px", height: "400px", top: "-100px", left: "-100px" }}
-        animate={{ x: [0, 100, -100, 0], y: [0, 100, -100, 0] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-      />
-      {/* 🔵 Floating Blob Bottom Right */}
-      <motion.div
-        className="absolute rounded-full bg-sky-700 blur-3xl opacity-60"
-        style={{ width: "300px", height: "300px", bottom: "-50px", right: "-50px" }}
-        animate={{ x: [0, -80, 80, 0], y: [0, -80, 80, 0] }}
-        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-      />
+    <div className="min-h-screen bg-[#0f0f0f] text-white flex items-center justify-center px-4 relative overflow-hidden">
+      {/* 🟩 Grid Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none z-0" />
 
-      {/* Glass Card */}
+      {/* 🔳 Glassmorphic Card */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
-        className="relative z-10 p-8 rounded-xl w-full max-w-md border border-sky-300 bg-white/5 backdrop-blur-xl shadow-[0_0_20px_rgba(56,189,248,0.6)]"
+        className="relative z-10 w-full max-w-md p-8 bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl shadow-xl"
       >
-        <h2 className="text-3xl font-bold text-sky-300 text-center mb-6">
+        <h1 className="text-3xl font-bold text-center mb-2 text-lime-400">
           Admin Login
-        </h2>
+        </h1>
+        <p className="text-center text-gray-400 mb-6 text-sm">
+          Login with admin credentials
+        </p>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* Email */}
           <div>
-            <label className="block text-sm mb-1 text-sky-200">Email</label>
+            <label className="block text-sm mb-1 text-gray-300">Email</label>
             <input
               type="email"
               {...register("email", {
@@ -104,7 +90,7 @@ const AdminLoginPage = () => {
                 },
               })}
               placeholder="admin@example.com"
-              className="w-full px-4 py-3 rounded-lg bg-black bg-opacity-30 border border-sky-400 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-300 disabled:opacity-50"
+              className="w-full px-4 py-2 rounded-md bg-[#1a1a1a] border border-[#333] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-lime-400"
               disabled={loading}
             />
             {errors.email && (
@@ -114,41 +100,46 @@ const AdminLoginPage = () => {
 
           {/* Password */}
           <div>
-            <label className="block text-sm mb-1 text-sky-200">Password</label>
+            <label className="block text-sm mb-1 text-gray-300">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 {...register("password", {
                   required: "Password is required",
-                  minLength: { value: 6, message: "Minimum 6 characters required" },
+                  minLength: {
+                    value: 6,
+                    message: "Minimum 6 characters required",
+                  },
                 })}
                 placeholder="Enter your password"
-                className="w-full px-4 py-3 rounded-lg bg-black bg-opacity-30 border border-sky-400 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-300 disabled:opacity-50"
+                className="w-full px-4 py-2 rounded-md bg-[#1a1a1a] border border-[#333] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-lime-400"
                 disabled={loading}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute right-3 top-3 text-sm text-sky-200"
+                className="absolute right-3 top-2 text-sm text-lime-400"
               >
                 {showPassword ? "Hide" : "Show"}
               </button>
             </div>
             {errors.password && (
-              <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
+              <p className="text-red-400 text-sm mt-1">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
-          {/* Submit */}
-          <div>
-            <button
-              type="submit"
-              className="w-full py-3 rounded-lg bg-sky-400 hover:bg-sky-500 transition-colors font-bold text-white shadow-md disabled:opacity-50"
-              disabled={loading}
-            >
-              {loading ? "Logging in..." : "Login"}
-            </button>
-          </div>
+          {/* Submit Button */}
+          <motion.button
+            type="submit"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            disabled={loading}
+            className="w-full py-3 bg-lime-400 hover:bg-lime-300 text-black font-semibold rounded-full transition disabled:opacity-60"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </motion.button>
         </form>
       </motion.div>
     </div>

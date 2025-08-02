@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 const LandingPage = ({
-  title = "Welcome to True Focus SaaS",
-  tagline = "Experience clarity in productivity.",
-  words = ["Effortless", "Powerful", "Elegant"],
+  title = "Discover. Showcase. Inspire.",
+  tagline = "RandomStuff – Your platform to share and explore dev projects.",
+  words = ["Innovative", "Open Source", "Student-Built"],
   blurAmount = 5,
-  borderColor = "green",
-  glowColor = "rgba(0, 255, 0, 0.6)",
+  borderColor = "#BAFF38",
+  glowColor = "rgba(186, 255, 56, 0.6)",
   animationDuration = 0.5,
   pauseBetweenAnimations = 1,
 }) => {
@@ -45,9 +45,9 @@ const LandingPage = ({
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-8 relative overflow-hidden">
-      {/* 🔵 Animated Blurry Blue Blob */}
+      {/* 🔵 Animated Blurry Blue Blob
       <motion.div
-        className="absolute rounded-full bg-blue-500 blur-3xl opacity-50"
+        className="absolute rounded-full bg-lime-400 blur-3xl opacity-50"
         style={{
           width: "400px",
           height: "400px",
@@ -63,7 +63,7 @@ const LandingPage = ({
           repeat: Infinity,
           ease: "linear",
         }}
-      />
+      /> */}
 
       <h1 className="text-5xl font-extrabold mb-4 text-center">{title}</h1>
       <p className="text-lg text-center max-w-xl mb-8 text-gray-400">
@@ -82,9 +82,7 @@ const LandingPage = ({
               ref={(el) => (wordRefs.current[index] = el)}
               className="relative text-4xl font-bold cursor-pointer"
               style={{
-                filter: isActive
-                  ? "blur(0px)"
-                  : `blur(${blurAmount}px)`,
+                filter: isActive ? "blur(0px)" : `blur(${blurAmount}px)`,
                 "--border-color": borderColor,
                 "--glow-color": glowColor,
                 transition: `filter ${animationDuration}s ease`,
