@@ -33,7 +33,7 @@ const LoginPage = () => {
   // const handleGoogleLogin = async () => {
   //   try {
   //     const response = await axios.get(
-  //       `http://localhost:3000/api/randomstuff/oauth/google/callback`
+  //       `https://randomstuff-bjgb.onrender.com/api/randomstuff/oauth/google/callback`
   //     );
 
   //     console.log(response.data);
@@ -46,7 +46,7 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/randomstuff/auth/login",
+        "https://randomstuff-bjgb.onrender.com/api/randomstuff/auth/login",
         data,
         {
           headers: { "Content-Type": "application/json" },

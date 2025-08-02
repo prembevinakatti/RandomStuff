@@ -40,7 +40,7 @@ const RegisterPage = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/randomstuff/auth/register`,
+        `https://randomstuff-bjgb.onrender.com/api/randomstuff/auth/register`,
         { ...data, captcha: token },
         {
           headers: { "Content-Type": "application/json" },

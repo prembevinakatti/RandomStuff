@@ -32,7 +32,7 @@ const SettingsPage = () => {
 
     try {
       await axios.post(
-        `http://localhost:3000/api/randomstuff/auth/changePassword`,
+        `https://randomstuff-bjgb.onrender.com/api/randomstuff/auth/changePassword`,
         data,
         {
           headers: { "Content-Type": "application/json" },

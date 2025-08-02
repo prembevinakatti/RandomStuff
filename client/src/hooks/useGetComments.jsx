@@ -9,7 +9,7 @@ const useGetComments = (projectId) => {
     const fetchComments = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/randomstuff/comment/getComment/${projectId}`,
+          `https://randomstuff-bjgb.onrender.com/api/randomstuff/comment/getComment/${projectId}`,
           {
             headers: {
               "Content-Type": "application/json",

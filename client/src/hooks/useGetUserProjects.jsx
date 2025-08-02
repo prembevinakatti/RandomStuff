@@ -7,7 +7,7 @@ const useGetUserProjects = () => {
     const fetchUserProjects = async () => {
       try {
         const repsonse = await axios.get(
-          `http://localhost:3000/api/randomstuff/project/getUserProjects`,
+          `https://randomstuff-bjgb.onrender.com/api/randomstuff/project/getUserProjects`,
           {
             headers: {
               "Content-Type": "application/json",

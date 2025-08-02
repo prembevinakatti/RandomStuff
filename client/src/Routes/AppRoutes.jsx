@@ -1,4 +1,3 @@
-import AdminLoginPage from "@/components/Auth/AdminLoginPage";
 import Login from "@/components/Auth/Login";
 import OtpVerificationPage from "@/components/Auth/OtpVerificationPage";
 import ProfileCreate from "@/components/Auth/ProfilePages/ProfileCreate";
@@ -21,7 +20,6 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/settings" element={<SettingsPage />} />
-      <Route path="/admin-login" element={<AdminLoginPage />} />
       <Route path="/admin-home" element={<AdminHomePage />} />
       <Route path="/profile-create" element={<ProfileCreate />} />
       <Route path="/otp-verification" element={<OtpVerificationPage />} />

@@ -19,7 +19,7 @@ const AdminLoginPage = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/randomstuff/admin/login",
+        "https://randomstuff-bjgb.onrender.com/api/randomstuff/admin/login",
         data,
         {
           headers: { "Content-Type": "application/json" },

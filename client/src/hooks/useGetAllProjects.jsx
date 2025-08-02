@@ -11,7 +11,7 @@ const useGetAllProjects = () => {
     const fetchAllProjects = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/randomstuff/project/getAllProjects",
+          "https://randomstuff-bjgb.onrender.com/api/randomstuff/project/getAllProjects",
           {
             headers: {
               "Content-Type": "application/json",

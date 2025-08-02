@@ -54,7 +54,7 @@ const ProjectDetails = () => {
     const fetchInitialComments = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/api/randomstuff/comment/${projectId}`,
+          `https://randomstuff-bjgb.onrender.com/api/randomstuff/comment/${projectId}`,
           { withCredentials: true }
         );
         setComments(res.data.comments);
@@ -69,7 +69,7 @@ const ProjectDetails = () => {
   const fetchProject = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3000/api/randomstuff/project/getProjectById/${projectId}`,
+        `https://randomstuff-bjgb.onrender.com/api/randomstuff/project/getProjectById/${projectId}`,
         { withCredentials: true }
       );
       const proj = res.data.project;
@@ -88,7 +88,7 @@ const ProjectDetails = () => {
   const toggleLike = async () => {
     try {
       const res = await axios.put(
-        `http://localhost:3000/api/randomstuff/project/likeUnlike/${projectId}`,
+        `https://randomstuff-bjgb.onrender.com/api/randomstuff/project/likeUnlike/${projectId}`,
         {},
         { withCredentials: true }
       );
@@ -107,7 +107,7 @@ const ProjectDetails = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/randomstuff/comment/addComment`,
+        `https://randomstuff-bjgb.onrender.com/api/randomstuff/comment/addComment`,
         {
           projectId: projectId,
           commentedUser: user._id,

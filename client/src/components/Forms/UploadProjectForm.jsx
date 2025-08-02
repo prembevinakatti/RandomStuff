@@ -80,7 +80,7 @@ const UploadProjectForm = () => {
 
     try {
       const res = await fetch(
-        "http://localhost:3000/api/pinata/upload/upload-images",
+        "https://randomstuff-bjgb.onrender.com/api/pinata/upload/upload-images",
         {
           method: "POST",
           body: formData,
@@ -104,7 +104,7 @@ const UploadProjectForm = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:3000/api/randomstuff/project/uploadProject",
+        "https://randomstuff-bjgb.onrender.com/api/randomstuff/project/uploadProject",
         payload,
         {
           headers: { "Content-Type": "application/json" },

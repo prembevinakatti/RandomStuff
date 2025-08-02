@@ -21,7 +21,7 @@ const OtpVerificationPage = () => {
     setIsRequestingOtp(true);
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/randomstuff/auth/requestOtp`,
+        `https://randomstuff-bjgb.onrender.com/api/randomstuff/auth/requestOtp`,
         {},
         {
           headers: {
@@ -72,7 +72,7 @@ const OtpVerificationPage = () => {
     const enteredOtp = Number(otp.join(""));
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/randomstuff/auth/verifyOtp`,
+        `https://randomstuff-bjgb.onrender.com/api/randomstuff/auth/verifyOtp`,
         { otp: enteredOtp },
         {
           headers: {

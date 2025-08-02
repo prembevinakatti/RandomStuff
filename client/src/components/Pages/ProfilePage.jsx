@@ -65,7 +65,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       const res = await axios.get(
-        "http://localhost:3000/api/randomstuff/profile/getProfileByUserId",
+        "https://randomstuff-bjgb.onrender.com/api/randomstuff/profile/getProfileByUserId",
         { withCredentials: true }
       );
       const profile = res.data.profile;
@@ -105,7 +105,7 @@ const ProfilePage = () => {
       console.log(updatedData);
 
       await axios.put(
-        "http://localhost:3000/api/randomstuff/profile/updateProfile",
+        "https://randomstuff-bjgb.onrender.com/api/randomstuff/profile/updateProfile",
         updatedData,
         {
           headers: { "Content-Type": "application/json" },

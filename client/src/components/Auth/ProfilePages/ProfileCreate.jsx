@@ -142,7 +142,7 @@ const ProfileCreate = () => {
       });
 
       const response = await axios.post(
-        "http://localhost:3000/api/randomstuff/profile/createProfile",
+        "https://randomstuff-bjgb.onrender.com/api/randomstuff/profile/createProfile",
         { data: cleaned },
         {
           headers: { "Content-Type": "application/json" },
