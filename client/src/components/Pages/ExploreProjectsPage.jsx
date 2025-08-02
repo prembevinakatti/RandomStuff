@@ -94,7 +94,7 @@ const ProjectCard = ({ project, onClick }) => {
       <div className="flex items-center gap-4 mb-4">
         <img
           src={
-            project.user?.photo ||
+            project.userId.profileId.profileimage ||
             "https://cdn-icons-png.flaticon.com/512/149/149071.png"
           }
           alt={project?.userId?.username || "Anonymous"}

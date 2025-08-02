@@ -137,7 +137,7 @@ const ProfilePage = () => {
   };
 
   const profile = {
-    profileimage: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+    profileimage: profileDetails?.profileimage,
     name: user?.username,
     occupation: profileDetails?.professioninfo?.occupation,
     organization: profileDetails?.professioninfo?.organization,
