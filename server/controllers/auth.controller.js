@@ -103,12 +103,14 @@ module.exports.login = async (req, res) => {
     }
 
     const AuthToken = jwt.sign({ user: user }, process.env.AUTH_JWT_TOKEN, {
-      httpOnly: true, // Prevent JavaScript from accessing the cookie
-      secure: true, // Ensure cookie is sent only over HTTPS
-      sameSite: "None", // Required for cross-origin requests
-      maxAge: 24 * 60 * 60 * 1000,
+      expiresIn: "1d",
     });
-    res.cookie("AuthToken", AuthToken);
+    res.cookie("AuthToken", AuthToken, {
+      httpOnly: true,
+      secure: true, // Only over HTTPS
+      sameSite: "None", // Required for cross-site requests (e.g., frontend on different domain)
+      maxAge: 24 * 60 * 60 * 1000, // 1 day in ms
+    });
 
     return res
       .status(200)
