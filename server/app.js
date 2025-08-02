@@ -31,7 +31,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const corsOption = {
-  origin: "http://localhost:5173",
+  origin: "https://randomstuff-1.onrender.com",
   credentials: true,
 };
 app.use(cors(corsOption));
